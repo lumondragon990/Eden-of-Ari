@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Para Ari · El Jardín</title>
+<meta name="description" content="A garden of quotes, made for Ari." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --petal: #FFF1F5;
+    --blush: #FFD9E4;
+    --peony: #E3487C;
+    --peony-deep: #B92D5D;
+    --plum: #38141F;
+    --rosegold: #B76E79;
+    --glass: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.75);
+    --shadow: 0 24px 60px rgba(185, 45, 93, 0.18);
+    --radius-arch: 999px 999px 24px 24px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Karla', sans-serif;
+    color: var(--plum);
+    background:
+      radial-gradient(1200px 800px at 85% -10%, #FFE3EC 0%, transparent 60%),
+      radial-gradient(900px 700px at -10% 100%, #FFDDE8 0%, transparent 55%),
+      var(--petal);
+    overflow-x: hidden;
+  }
+
+  /* ---------- Peony blooms (generated, layered, realistic) ---------- */
+  .blooms { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .bloom { position: absolute; animation: breathe 11s ease-in-out infinite; }
+  .bloom svg { display: block; width: 100%; height: auto; }
+  .bloom.b1 { top: -90px;  left: -100px; width: 340px; opacity: 0.9; }
+  .bloom.b2 { bottom: -110px; right: -90px; width: 400px; opacity: 0.9; animation-delay: -3s; }
+  .bloom.b3 { top: 30%; right: -130px; width: 260px; opacity: 0.75; animation-delay: -6s; }
+  .bloom.b4 { bottom: 6%; left: -120px; width: 250px; opacity: 0.75; animation-delay: -4s; }
+  /* soft-focus blooms far in the background, like bokeh depth of field */
+  .bloom.bg { filter: blur(26px) saturate(1.1); opacity: 0.5; animation: none; }
+  .bloom.bg1 { top: 8%; left: 18%; width: 480px; }
+  .bloom.bg2 { bottom: -6%; right: 22%; width: 540px; opacity: 0.42; }
+  .bokeh {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,190,210,0.55) 0%, rgba(255,190,210,0) 70%);
+    filter: blur(10px);
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50%      { transform: scale(1.035) rotate(1.5deg); }
+  }
+
+  /* ---------- Drifting petals (real petal shape, fluttering) ---------- */
+  .petals { position: fixed; inset: 0; pointer-events: none; z-index: 0; perspective: 600px; }
+  .petal {
+    position: absolute; top: -8vh;
+    width: 26px;
+    animation: drift linear infinite;
+    will-change: transform;
+  }
+  .petal svg { display: block; width: 100%; height: auto; animation: flutter 3.2s ease-in-out infinite; }
+  @keyframes drift {
+    0%   { transform: translate3d(0, -8vh, 0) rotate(0deg); }
+    100% { transform: translate3d(var(--sway, 60px), 112vh, 0) rotate(300deg); }
+  }
+  @keyframes flutter {
+    0%, 100% { transform: rotateX(18deg) rotateZ(-10deg); }
+    50%      { transform: rotateX(62deg) rotateZ(12deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .petal, .petal svg, .bloom { animation: none; }
+    .petal { display: none; }
+    .fade-swap, .rise, .reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
+  }
+
+  /* ---------- Layout ---------- */
+  header {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px clamp(20px, 5vw, 56px);
+  }
+  .monogram {
+    font-family: 'Fraunces', serif;
+    font-style: italic; font-weight: 600;
+    font-size: 28px; color: var(--peony-deep);
+  }
+  nav { display: flex; gap: 22px; }
+  nav a {
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--rosegold); text-decoration: none;
+  }
+  nav a:hover { color: var(--peony-deep); }
+
+  .hero {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(280px, 420px) minmax(320px, 620px);
+    gap: clamp(32px, 6vw, 80px);
+    align-items: center; justify-content: center;
+    padding: 8px clamp(20px, 5vw, 56px) 90px;
+    min-height: calc(100vh - 120px);
+  }
+
+  /* ---------- Arched garden-gate photo ---------- */
+  .gate {
+    position: relative;
+    border-radius: var(--radius-arch);
+    padding: 12px;
+    background: linear-gradient(160deg, #FFFFFF 0%, #FFD9E4 100%);
+    box-shadow: var(--shadow);
+    animation: rise 1.1s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .gate::after {
+    content: "";
+    position: absolute; inset: -14px;
+    border: 1.5px solid rgba(185, 45, 93, 0.25);
+    border-radius: var(--radius-arch);
+    pointer-events: none;
+  }
+  .gate img {
+    display: block; width: 100%;
+    aspect-ratio: 3 / 4; object-fit: cover;
+    border-radius: var(--radius-arch);
+    transition: opacity 0.9s ease;
+  }
+  .gate img.fading { opacity: 0; }
+  .gate-caption {
+    position: absolute; bottom: 26px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(56, 20, 31, 0.55);
+    color: #FFF1F5;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding: 8px 18px; border-radius: 999px;
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ---------- Glass cards ---------- */
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+  }
+  .quote-card { position: relative; padding: clamp(32px, 5vw, 56px); animation: rise 1.1s 0.15s cubic-bezier(.2,.7,.2,1) both; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--peony-deep); margin-bottom: 20px;
+  }
+  #quoteText {
+    font-family: 'Fraunces', serif; font-weight: 450;
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1.22; letter-spacing: -0.01em;
+    min-height: 3.6em;
+  }
+  #quoteText em, .why-copy em { font-style: italic; color: var(--peony-deep); }
+  .fade-swap { animation: fadeSwap 0.9s ease both; }
+  @keyframes fadeSwap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+  button {
+    font-family: 'Karla', sans-serif; font-weight: 600;
+    font-size: 14px; letter-spacing: 0.06em;
+    border: none; border-radius: 999px;
+    padding: 14px 24px; cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+  button:hover { transform: translateY(-2px); }
+  button:focus-visible { outline: 3px solid var(--peony); outline-offset: 3px; }
+  .btn-primary { background: var(--peony-deep); color: #FFF1F5; box-shadow: 0 10px 24px rgba(185, 45, 93, 0.35); }
+  .btn-primary:hover { background: var(--peony); }
+  .btn-glass { background: rgba(255,255,255,0.6); border: 1px solid var(--glass-border); color: var(--plum); }
+  .btn-glass.saved { background: var(--blush); color: var(--peony-deep); }
+
+  /* ---------- Sections ---------- */
+  section.page {
+    position: relative; z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 90px clamp(20px, 5vw, 56px);
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(36px, 5vw, 58px);
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .section-title .script { font-style: italic; color: var(--peony-deep); }
+  .section-sub {
+    font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--rosegold); margin-bottom: 40px;
+  }
+
+  /* ---------- Why Ari ---------- */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: stretch;
+  }
+  .why-copy { padding: clamp(28px, 4vw, 48px); }
+  .why-copy p {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(19px, 2vw, 23px);
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+  .why-copy p:last-child { margin-bottom: 0; }
+  .why-photos { display: grid; grid-template-rows: 1fr 1fr; gap: 18px; }
+  .why-photos .frame {
+    border-radius: 22px; overflow: hidden;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+  }
+  .why-photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ---------- Puzzle ---------- */
+  .puzzle-wrap {
+    display: grid;
+    grid-template-columns: minmax(280px, 460px) minmax(260px, 1fr);
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+  .board {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 24px;
+    padding: 10px;
+    background: linear-gradient(160deg, #FFFFFF 0%, #FFD9E4 100%);
+    box-shadow: var(--shadow);
+  }
+  .board-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--blush);
+  }
+  .tile {
+    position: absolute;
+    width: calc(100% / 3);
+    height: calc(100% / 3);
+    background-image: url("images/ari-1.jpg");
+    background-size: 300% 300%;
+    border: 1px solid rgba(255, 241, 245, 0.8);
+    cursor: pointer;
+    transition: top 0.28s cubic-bezier(.2,.7,.2,1), left 0.28s cubic-bezier(.2,.7,.2,1);
+  }
+  .tile:hover { filter: brightness(1.06); }
+  .board.solved .tile { border-color: transparent; cursor: default; }
+
+  .solved-overlay {
+    position: absolute; inset: 10px;
+    border-radius: 16px;
+    display: flex; align-items: flex-end; justify-content: center;
+    background: linear-gradient(to top, rgba(56,20,31,0.75) 0%, transparent 55%);
+    opacity: 0; pointer-events: none;
+    transition: opacity 1.2s ease;
+  }
+  .board.solved .solved-overlay { opacity: 1; }
+  .solved-overlay span {
+    color: #FFF1F5;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    padding: 0 24px 22px;
+    text-align: center;
+  }
+
+  .puzzle-side { padding: clamp(28px, 4vw, 48px); }
+  .puzzle-side p { font-size: 16px; line-height: 1.6; color: var(--plum); margin-bottom: 24px; }
+  #moveCount { font-weight: 600; color: var(--peony-deep); }
+
+  .puzzle-quote {
+    margin-top: 28px;
+    font-family: 'Fraunces', serif;
+    font-size: clamp(22px, 2.4vw, 30px);
+    line-height: 1.35;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 1.2s ease 0.3s, transform 1.2s cubic-bezier(.2,.7,.2,1) 0.3s;
+  }
+  .puzzle-quote.show { opacity: 1; transform: translateY(0); }
+  .puzzle-quote em { color: var(--peony-deep); }
+
+  /* ---------- Favorites ---------- */
+  .fav-toggle { position: fixed; right: clamp(20px, 4vw, 44px); bottom: clamp(20px, 4vw, 36px); z-index: 5; }
+  .fav-panel {
+    position: fixed; right: 0; bottom: 0;
+    width: min(440px, 100%); max-height: 72vh; overflow-y: auto; z-index: 6;
+    background: rgba(255, 241, 245, 0.92);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-radius: 28px 28px 0 0;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 -20px 60px rgba(185, 45, 93, 0.25);
+    padding: 28px;
+    transform: translateY(110%);
+    transition: transform 0.45s cubic-bezier(.2,.7,.2,1);
+  }
+  .fav-panel.open { transform: translateY(0); }
+  .fav-panel h2 { font-family: 'Fraunces', serif; font-style: italic; font-size: 24px; color: var(--peony-deep); margin-bottom: 16px; }
+  .fav-item {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px; padding: 16px 18px; margin-bottom: 12px;
+    font-family: 'Fraunces', serif; font-size: 17px; line-height: 1.4;
+    display: flex; gap: 12px; align-items: flex-start; justify-content: space-between;
+  }
+  .fav-item button { padding: 4px 10px; font-size: 16px; background: transparent; color: var(--rosegold); }
+  .fav-empty { color: var(--rosegold); font-size: 15px; }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 12px 20px 40px;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--rosegold);
+  }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 28px;
+    transform: translate(-50%, 20px);
+    background: var(--plum); color: #FFF1F5;
+    padding: 12px 22px; border-radius: 999px; font-size: 14px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 9;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 860px) {
+    nav { display: none; }
+    .hero { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; padding-bottom: 60px; }
+    .gate { max-width: 360px; margin: 0 auto; }
+    #quoteText { min-height: 0; }
+    .why-grid, .puzzle-wrap { grid-template-columns: 1fr; }
+    .why-photos { grid-template-rows: none; grid-template-columns: 1fr 1fr; }
+    .why-photos img { aspect-ratio: 3 / 4; }
+    section.page { padding-top: 60px; padding-bottom: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Peony blooms (generated at load) -->
+<div class="blooms" id="blooms" aria-hidden="true"></div>
+
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<header>
+  <div class="monogram">El Jardín de Ari</div>
+  <nav>
+    <a href="#why">Why Ari</a>
+    <a href="#puzzle">The Puzzle</a>
+  </nav>
+</header>
+
+<!-- ============ HERO / DAILY QUOTE ============ -->
+<main class="hero">
+  <figure class="gate">
+    <img id="ariPhoto" src="images/ari-1.jpg" alt="Ari" />
+    <figcaption class="gate-caption">Ari · siempre en flor</figcaption>
+  </figure>
+
+  <section class="glass quote-card" aria-live="polite">
+    <p class="eyebrow">Quote of the day · Para ti</p>
+    <blockquote id="quoteText"></blockquote>
+    <div class="actions">
+      <button class="btn-primary" id="newQuoteBtn">Another quote</button>
+      <button class="btn-glass" id="saveBtn">♡ Save</button>
+      <button class="btn-glass" id="shareBtn">Share</button>
+    </div>
+  </section>
+</main>
+
+<!-- ============ WHY ARI ============ -->
+<section class="page" id="why">
+  <h2 class="section-title reveal">Why <span class="script">Ari</span></h2>
+  <p class="section-sub reveal">Somebody had to say it</p>
+
+  <div class="why-grid">
+    <div class="glass why-copy reveal">
+      <p>I could just say she's beautiful and stop there. It would be true. Ask anybody who's met her. But that's the easy part, and honestly it's not even the part that gets me. It's how she carries it. Like she decided a long time ago that she belongs wherever she's standing, and nobody's ever proven her wrong.</p>
+      <p>Drop her anywhere. New city, new job, a room full of strangers. Doesn't matter. <em>In every garden, she flowers.</em> Most people need things to go right before they can be themselves. Ari brings her own weather.</p>
+      <p>And here's the thing about her light. It doesn't stay on her. You watch people around her start laughing more, talking more, acting like better versions of themselves and not even noticing they're doing it. I noticed. <em>That's why this exists.</em></p>
+    </div>
+    <div class="why-photos">
+      <div class="frame reveal"><img src="images/ari-3.jpg" alt="Ari smiling" /></div>
+      <div class="frame reveal"><img src="images/ari-2.jpg" alt="Ari" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PUZZLE ============ -->
+<section class="page" id="puzzle">
+  <h2 class="section-title reveal">The <span class="script">Puzzle</span></h2>
+  <p class="section-sub reveal">Slide the pieces until the picture comes together</p>
+
+  <div class="puzzle-wrap">
+    <div class="board reveal" id="board">
+      <div class="board-inner" id="boardInner"></div>
+      <div class="solved-overlay"><span>There she is.</span></div>
+    </div>
+
+    <div class="glass puzzle-side reveal">
+      <p>Tap a tile next to the empty space to slide it around. Put the picture back together. Take your time, she's worth it.</p>
+      <p>Moves: <span id="moveCount">0</span></p>
+      <div class="actions" style="margin-top:0;">
+        <button class="btn-primary" id="shuffleBtn">Shuffle</button>
+        <button class="btn-glass" id="solveBtn">Give up? Never.</button>
+      </div>
+      <blockquote class="puzzle-quote" id="puzzleQuote">
+        "Anybody can stand back and admire the finished picture. I'd rather be the one putting it together. Piece by piece, day by day. Building something <em>with you</em> beats watching from a distance every time."
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<button class="btn-primary fav-toggle" id="favToggle">Favorites</button>
+
+<aside class="fav-panel" id="favPanel" aria-label="Saved quotes">
+  <h2>Saved for Ari</h2>
+  <div id="favList"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<footer>Grown with intention · Houston, TX</footer>
+
+<script>
+  // ---------- Quotes (original, written for Ari) ----------
+  const QUOTES = [
+    "Pretty is everywhere. What you have is rarer than that.",
+    "You walk in like you already know everybody in the room. Give it an hour and you do.",
+    "Eres el tipo de belleza que no pide permiso.",
+    "Peonies take a few years before they really bloom. Worth the wait, every time.",
+    "Some people need the right place to shine. You just show up and the place adjusts.",
+    "Hay mujeres que iluminan. Tú enciendes.",
+    "I've seen a lot of gardens. None of them had you.",
+    "You could wear a hoodie and messy hair and still be the best-dressed person in the building.",
+    "Lo tuyo no es suerte. Es presencia.",
+    "The bar was already high. Then you walked in and moved it.",
+    "People remember how you made them feel. Nobody forgets you.",
+    "Quien te conoce entiende por qué existen los jardines.",
+    "Soft with the people who deserve it. Sharp with everything else. Perfect balance.",
+    "A peony doesn't rush. Neither do you. It shows.",
+    "You laugh and the whole table laughs. Every single time.",
+    "La elegancia no grita. La tuya no tiene que hacerlo.",
+    "Whatever room you're in becomes the room to be in.",
+    "Even Eden needed one flower to set the standard.",
+    "Dream bigger. The rooms that felt too small were never yours anyway.",
+    "Tú no llegas a los lugares. Los lugares te estaban esperando."
+  ];
+
+  const PHOTOS = ["images/ari-1.jpg", "images/ari-2.jpg", "images/ari-3.jpg", "images/ari-4.jpg"];
+
+  // ---------- Daily quote ----------
+  const dayIndex = Math.floor(Date.now() / 86400000);
+  let quoteIdx = dayIndex % QUOTES.length;
+  let photoIdx = dayIndex % PHOTOS.length;
+
+  const quoteText = document.getElementById("quoteText");
+  const ariPhoto = document.getElementById("ariPhoto");
+  const toast = document.getElementById("toast");
+  const saveBtn = document.getElementById("saveBtn");
+
+  function plainQuote(html) {
+    const d = document.createElement("div");
+    d.innerHTML = html;
+    return d.textContent;
+  }
+
+  function renderQuote() {
+    quoteText.classList.remove("fade-swap");
+    void quoteText.offsetWidth;
+    quoteText.innerHTML = "\u201C" + QUOTES[quoteIdx] + "\u201D";
+    quoteText.classList.add("fade-swap");
+    updateSaveState();
+  }
+
+  function swapPhoto() {
+    ariPhoto.classList.add("fading");
+    setTimeout(() => {
+      photoIdx = (photoIdx + 1) % PHOTOS.length;
+      ariPhoto.src = PHOTOS[photoIdx];
+      ariPhoto.classList.remove("fading");
+    }, 900);
+  }
+
+  document.getElementById("newQuoteBtn").addEventListener("click", () => {
+    quoteIdx = (quoteIdx + 1) % QUOTES.length;
+    renderQuote();
+    swapPhoto();
+  });
+
+  // ---------- Favorites ----------
+  const FAV_KEY = "ari-favorites";
+  const getFavs = () => JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+  const setFavs = (f) => localStorage.setItem(FAV_KEY, JSON.stringify(f));
+
+  function updateSaveState() {
+    const saved = getFavs().includes(plainQuote(QUOTES[quoteIdx]));
+    saveBtn.textContent = saved ? "♥ Saved" : "♡ Save";
+    saveBtn.classList.toggle("saved", saved);
+  }
+
+  saveBtn.addEventListener("click", () => {
+    const current = plainQuote(QUOTES[quoteIdx]);
+    let favs = getFavs();
+    if (favs.includes(current)) {
+      favs = favs.filter(q => q !== current);
+      showToast("Removed from favorites");
+    } else {
+      favs.push(current);
+      showToast("Saved to favorites ♥");
+    }
+    setFavs(favs);
+    updateSaveState();
+    renderFavs();
+  });
+
+  const favPanel = document.getElementById("favPanel");
+  const favList = document.getElementById("favList");
+  document.getElementById("favToggle").addEventListener("click", () => {
+    favPanel.classList.toggle("open");
+    renderFavs();
+  });
+
+  function renderFavs() {
+    const favs = getFavs();
+    favList.innerHTML = "";
+    if (!favs.length) {
+      favList.innerHTML = '<p class="fav-empty">Nothing saved yet — tap ♡ on a quote you love.</p>';
+      return;
+    }
+    favs.forEach((q, i) => {
+      const item = document.createElement("div");
+      item.className = "fav-item";
+      const span = document.createElement("span");
+      span.textContent = "\u201C" + q + "\u201D";
+      const del = document.createElement("button");
+      del.textContent = "✕";
+      del.setAttribute("aria-label", "Remove favorite");
+      del.addEventListener("click", () => {
+        const favs2 = getFavs();
+        favs2.splice(i, 1);
+        setFavs(favs2);
+        renderFavs();
+        updateSaveState();
+      });
+      item.append(span, del);
+      favList.appendChild(item);
+    });
+  }
+
+  // ---------- Share ----------
+  document.getElementById("shareBtn").addEventListener("click", async () => {
+    const text = "\u201C" + plainQuote(QUOTES[quoteIdx]) + "\u201D — El Jardín de Ari";
+    if (navigator.share) {
+      try { await navigator.share({ text }); } catch (_) {}
+    } else {
+      await navigator.clipboard.writeText(text);
+      showToast("Copied to clipboard");
+    }
+  });
+
+  let toastTimer;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+  }
+
+  // ---------- Realistic peony generator ----------
+  // Peonies are dense, ruffled, many-layered. Each bloom is built from ~40
+  // individually shaped petals with gradients, edge irregularity and depth shadows.
+  function mulberry32(seed) {
+    return function () {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function petalPath(w, h, rng) {
+    // Petal points up from base (0,0). Top edge is ruffled with random lobes.
+    const ruffles = 4 + Math.floor(rng() * 3);
+    const lx = -0.46 * w, rx = 0.46 * w, topY = -0.85 * h;
+    let d = `M 0 0 C ${(-0.56 * w).toFixed(1)} ${(-0.2 * h).toFixed(1)}, ${(-0.68 * w).toFixed(1)} ${(-0.58 * h).toFixed(1)}, ${lx.toFixed(1)} ${topY.toFixed(1)}`;
+    let x = lx;
+    const step = (rx - lx) / ruffles;
+    for (let i = 0; i < ruffles; i++) {
+      const nx = x + step;
+      const midx = x + step / 2 + (rng() - 0.5) * step * 0.3;
+      const bumpY = -h * (0.92 + rng() * 0.16);
+      const endY = i === ruffles - 1 ? topY : -h * (0.78 + rng() * 0.08);
+      d += ` Q ${midx.toFixed(1)} ${bumpY.toFixed(1)}, ${nx.toFixed(1)} ${endY.toFixed(1)}`;
+      x = nx;
+    }
+    d += ` C ${(0.68 * w).toFixed(1)} ${(-0.58 * h).toFixed(1)}, ${(0.56 * w).toFixed(1)} ${(-0.2 * h).toFixed(1)}, 0 0 Z`;
+    return d;
+  }
+
+  function makePeony(id, seed) {
+    const rng = mulberry32(seed);
+    // outer layers pale, inner layers deep — like a real pink peony
+    const layers = [
+      { n: 9,  w: 66, h: 82, r: 26, tip: "#FFEBF1", base: "#F5B4CB" },
+      { n: 8,  w: 56, h: 68, r: 21, tip: "#FFDCE8", base: "#F09DBA" },
+      { n: 7,  w: 46, h: 54, r: 15, tip: "#FAC4D7", base: "#E77BA2" },
+      { n: 6,  w: 34, h: 42, r: 10, tip: "#F3A6C1", base: "#DA5E8C" },
+      { n: 12, w: 18, h: 24, r: 4,  tip: "#EC87AC", base: "#C24672" }
+    ];
+    let defs = "";
+    let body = "";
+    layers.forEach((L, li) => {
+      const gid = `${id}g${li}`;
+      defs += `<linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${L.tip}"/>
+        <stop offset="0.72" stop-color="${L.base}"/>
+        <stop offset="1" stop-color="${L.base}" stop-opacity="0.95"/>
+      </linearGradient>`;
+      let petals = "";
+      const baseAngle = rng() * 360;
+      for (let i = 0; i < L.n; i++) {
+        const a = baseAngle + (360 / L.n) * i + (rng() - 0.5) * 14;
+        const s = 0.9 + rng() * 0.22;
+        const d = petalPath(L.w, L.h, rng);
+        petals += `<path d="${d}" fill="url(#${gid})"
+          transform="rotate(${a.toFixed(1)}) translate(0 ${-L.r}) scale(${s.toFixed(2)})"/>`;
+      }
+      body += `<g filter="url(#${id}shade)" opacity="${li === 0 ? 0.96 : 1}">${petals}</g>`;
+    });
+    // faint center glow where the petals gather
+    body += `<circle r="7" fill="#B23A66" opacity="0.55"/>
+             <circle r="3.5" fill="#F7CBDA" opacity="0.8"/>`;
+    return `<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        ${defs}
+        <filter id="${id}shade" x="-40%" y="-40%" width="180%" height="180%">
+          <feDropShadow dx="0" dy="2.5" stdDeviation="3" flood-color="#8E2A50" flood-opacity="0.28"/>
+        </filter>
+        <filter id="${id}rough">
+          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="${seed}" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+        </filter>
+      </defs>
+      <g transform="translate(120 120)" filter="url(#${id}rough)">${body}</g>
+    </svg>`;
+  }
+
+  const bloomsHost = document.getElementById("blooms");
+  const bloomSpecs = [
+    { cls: "bloom bg bg1", seed: 11 },
+    { cls: "bloom bg bg2", seed: 23 },
+    { cls: "bloom b1", seed: 3 },
+    { cls: "bloom b2", seed: 7 },
+    { cls: "bloom b3", seed: 15 },
+    { cls: "bloom b4", seed: 19 }
+  ];
+  bloomSpecs.forEach((b, i) => {
+    const div = document.createElement("div");
+    div.className = b.cls;
+    div.innerHTML = makePeony("p" + i, b.seed);
+    bloomsHost.appendChild(div);
+  });
+  // soft bokeh dots for photographic depth
+  for (let i = 0; i < 7; i++) {
+    const dot = document.createElement("div");
+    dot.className = "bokeh";
+    const s = 40 + Math.random() * 120;
+    dot.style.width = dot.style.height = s + "px";
+    dot.style.left = Math.random() * 100 + "%";
+    dot.style.top = Math.random() * 100 + "%";
+    dot.style.opacity = 0.25 + Math.random() * 0.3;
+    bloomsHost.appendChild(dot);
+  }
+
+  // ---------- Falling petals (real petal silhouettes) ----------
+  const petals = document.getElementById("petals");
+  const PETAL_SVG = `<svg viewBox="0 0 40 38" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFDFEA"/><stop offset="0.6" stop-color="#F5A9C4"/><stop offset="1" stop-color="#E67FA6"/>
+    </linearGradient></defs>
+    <path d="M20 36 C8 32 2 19 6 9 C9 2 16 0 20 5 C24 0 31 2 34 9 C38 19 32 32 20 36 Z" fill="url(#pg)"/>
+    <path d="M20 36 C15 27 14 15 18 6" stroke="rgba(255,255,255,0.55)" stroke-width="1.1" fill="none"/>
+  </svg>`;
+  // one shared gradient def so every petal can reference it
+  const gradHolder = document.createElement("div");
+  gradHolder.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;";
+  gradHolder.innerHTML = PETAL_SVG;
+  petals.appendChild(gradHolder);
+
+  const count = window.innerWidth < 700 ? 9 : 16;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement("div");
+    p.className = "petal";
+    p.innerHTML = `<svg viewBox="0 0 40 38"><path d="M20 36 C8 32 2 19 6 9 C9 2 16 0 20 5 C24 0 31 2 34 9 C38 19 32 32 20 36 Z" fill="url(#pg)"/><path d="M20 36 C15 27 14 15 18 6" stroke="rgba(255,255,255,0.55)" stroke-width="1.1" fill="none"/></svg>`;
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.width = (16 + Math.random() * 16) + "px";
+    p.style.setProperty("--sway", (Math.random() * 180 - 90) + "px");
+    p.style.animationDuration = 10 + Math.random() * 11 + "s";
+    p.style.animationDelay = -Math.random() * 16 + "s";
+    p.style.opacity = 0.55 + Math.random() * 0.4;
+    const flutter = p.querySelector("svg");
+    flutter.style.animationDuration = (2.4 + Math.random() * 2) + "s";
+    flutter.style.animationDelay = -Math.random() * 3 + "s";
+    petals.appendChild(p);
+  }
+
+  // ---------- Scroll reveal ----------
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+  // ---------- Sliding puzzle (3x3, ari-1.jpg) ----------
+  const N = 3;
+  const boardEl = document.getElementById("board");
+  const inner = document.getElementById("boardInner");
+  const moveCountEl = document.getElementById("moveCount");
+  const puzzleQuote = document.getElementById("puzzleQuote");
+
+  // state[row][col] = tile number 0..7, or null for the empty slot (tile 8 = bottom-right hidden)
+  let state = [];
+  let tiles = {}; // tileNumber -> element
+  let moves = 0;
+  let solvedFlag = false;
+
+  function goalState() {
+    const s = [];
+    let n = 0;
+    for (let r = 0; r < N; r++) {
+      s.push([]);
+      for (let c = 0; c < N; c++) s[r].push(n === N * N - 1 ? null : n), n++;
+    }
+    return s;
+  }
+
+  function buildTiles() {
+    inner.innerHTML = "";
+    tiles = {};
+    for (let n = 0; n < N * N - 1; n++) {
+      const t = document.createElement("div");
+      t.className = "tile";
+      const gr = Math.floor(n / N), gc = n % N;
+      t.style.backgroundPosition = (gc * 50) + "% " + (gr * 50) + "%";
+      t.addEventListener("click", () => tryMove(n));
+      tiles[n] = t;
+      inner.appendChild(t);
+    }
+  }
+
+  function positionTiles() {
+    for (let r = 0; r < N; r++) {
+      for (let c = 0; c < N; c++) {
+        const n = state[r][c];
+        if (n === null) continue;
+        tiles[n].style.top = (r * 100 / N) + "%";
+        tiles[n].style.left = (c * 100 / N) + "%";
+      }
+    }
+  }
+
+  function findTile(n) {
+    for (let r = 0; r < N; r++)
+      for (let c = 0; c < N; c++)
+        if (state[r][c] === n) return [r, c];
+  }
+
+  function tryMove(n, countIt = true) {
+    if (solvedFlag) return false;
+    const [r, c] = findTile(n);
+    const [er, ec] = findTile(null);
+    if (Math.abs(r - er) + Math.abs(c - ec) !== 1) return false;
+    state[er][ec] = n;
+    state[r][c] = null;
+    positionTiles();
+    if (countIt) {
+      moves++;
+      moveCountEl.textContent = moves;
+      checkSolved();
+    }
+    return true;
+  }
+
+  function checkSolved() {
+    const goal = goalState();
+    for (let r = 0; r < N; r++)
+      for (let c = 0; c < N; c++)
+        if (state[r][c] !== goal[r][c]) return;
+    solvePuzzle();
+  }
+
+  function solvePuzzle() {
+    solvedFlag = true;
+    // Fill in the missing corner so the full photo shows
+    const last = document.createElement("div");
+    last.className = "tile";
+    last.style.backgroundPosition = "100% 100%";
+    last.style.top = ((N - 1) * 100 / N) + "%";
+    last.style.left = ((N - 1) * 100 / N) + "%";
+    last.style.opacity = "0";
+    last.style.transition = "opacity 1s ease";
+    inner.appendChild(last);
+    requestAnimationFrame(() => { last.style.opacity = "1"; });
+    boardEl.classList.add("solved");
+    puzzleQuote.classList.add("show");
+    showToast("You built her back. ♥");
+  }
+
+  function shuffle() {
+    solvedFlag = false;
+    boardEl.classList.remove("solved");
+    puzzleQuote.classList.remove("show");
+    state = goalState();
+    buildTiles();
+    // Shuffle with random valid moves so it's always solvable
+    let lastMoved = -1;
+    for (let i = 0; i < 140; i++) {
+      const [er, ec] = findTile(null);
+      const candidates = [];
+      if (er > 0) candidates.push(state[er - 1][ec]);
+      if (er < N - 1) candidates.push(state[er + 1][ec]);
+      if (ec > 0) candidates.push(state[er][ec - 1]);
+      if (ec < N - 1) candidates.push(state[er][ec + 1]);
+      const pick = candidates.filter(x => x !== lastMoved)[Math.floor(Math.random() * (candidates.length - (candidates.includes(lastMoved) ? 1 : 0)))];
+      const n = pick !== undefined ? pick : candidates[0];
+      const [r, c] = findTile(n);
+      const [er2, ec2] = findTile(null);
+      state[er2][ec2] = n;
+      state[r][c] = null;
+      lastMoved = n;
+    }
+    moves = 0;
+    moveCountEl.textContent = "0";
+    positionTiles();
+  }
+
+  document.getElementById("shuffleBtn").addEventListener("click", shuffle);
+  document.getElementById("solveBtn").addEventListener("click", () => {
+    // Auto-solve: reset to goal with a flourish
+    state = goalState();
+    buildTiles();
+    positionTiles();
+    solvePuzzle();
+  });
+
+  shuffle();
+  renderQuote();
+</script>
+</body>
+</html>
