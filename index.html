@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Para Ari · El Jardín</title>
-<meta name="description" content="A garden of quotes, made for Ari." />
+<meta name="description" content="A garden made for Ari." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Karla:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
 <style>
   :root {
     --petal: #FFF1F5;
@@ -44,7 +44,6 @@
   .bloom.b2 { bottom: -110px; right: -90px; width: 400px; opacity: 0.9; animation-delay: -3s; }
   .bloom.b3 { top: 30%; right: -130px; width: 260px; opacity: 0.75; animation-delay: -6s; }
   .bloom.b4 { bottom: 6%; left: -120px; width: 250px; opacity: 0.75; animation-delay: -4s; }
-  /* soft-focus blooms far in the background, like bokeh depth of field */
   .bloom.bg { filter: blur(26px) saturate(1.1); opacity: 0.5; animation: none; }
   .bloom.bg1 { top: 8%; left: 18%; width: 480px; }
   .bloom.bg2 { bottom: -6%; right: 22%; width: 540px; opacity: 0.42; }
@@ -58,7 +57,7 @@
     50%      { transform: scale(1.035) rotate(1.5deg); }
   }
 
-  /* ---------- Drifting petals (real petal shape, fluttering) ---------- */
+  /* ---------- Drifting petals ---------- */
   .petals { position: fixed; inset: 0; pointer-events: none; z-index: 0; perspective: 600px; }
   .petal {
     position: absolute; top: -8vh;
@@ -109,7 +108,6 @@
     min-height: calc(100vh - 120px);
   }
 
-  /* ---------- Arched garden-gate photo ---------- */
   .gate {
     position: relative;
     border-radius: var(--radius-arch);
@@ -143,7 +141,6 @@
     white-space: nowrap;
   }
 
-  /* ---------- Glass cards ---------- */
   .glass {
     background: var(--glass);
     border: 1px solid var(--glass-border);
@@ -163,7 +160,7 @@
     line-height: 1.22; letter-spacing: -0.01em;
     min-height: 3.6em;
   }
-  #quoteText em, .why-copy em { font-style: italic; color: var(--peony-deep); }
+  #quoteText em, .why-copy em, .solo-copy em { font-style: italic; color: var(--peony-deep); }
   .fade-swap { animation: fadeSwap 0.9s ease both; }
   @keyframes fadeSwap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
@@ -174,6 +171,7 @@
     font-size: 14px; letter-spacing: 0.06em;
     border: none; border-radius: 999px;
     padding: 14px 24px; cursor: pointer;
+    touch-action: manipulation;
     transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
   }
   button:hover { transform: translateY(-2px); }
@@ -183,7 +181,6 @@
   .btn-glass { background: rgba(255,255,255,0.6); border: 1px solid var(--glass-border); color: var(--plum); }
   .btn-glass.saved { background: var(--blush); color: var(--peony-deep); }
 
-  /* ---------- Sections ---------- */
   section.page {
     position: relative; z-index: 1;
     max-width: 1080px;
@@ -210,14 +207,14 @@
     gap: clamp(28px, 4vw, 56px);
     align-items: stretch;
   }
-  .why-copy { padding: clamp(28px, 4vw, 48px); }
-  .why-copy p {
+  .why-copy, .solo-copy { padding: clamp(28px, 4vw, 48px); }
+  .why-copy p, .solo-copy p {
     font-family: 'Fraunces', serif;
     font-size: clamp(19px, 2vw, 23px);
     line-height: 1.6;
     margin-bottom: 22px;
   }
-  .why-copy p:last-child { margin-bottom: 0; }
+  .why-copy p:last-child, .solo-copy p:last-child { margin-bottom: 0; }
   .why-photos { display: grid; grid-template-rows: 1fr 1fr; gap: 18px; }
   .why-photos .frame {
     border-radius: 22px; overflow: hidden;
@@ -225,6 +222,8 @@
     box-shadow: var(--shadow);
   }
   .why-photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .solo-copy { max-width: 780px; margin: 0 auto; }
 
   .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.2,.7,.2,1); }
   .reveal.in { opacity: 1; transform: translateY(0); }
@@ -251,19 +250,54 @@
     border-radius: 16px;
     overflow: hidden;
     background: var(--blush);
+    touch-action: manipulation;
   }
   .tile {
     position: absolute;
     width: calc(100% / 3);
     height: calc(100% / 3);
-    background-image: url("images/ari-1.jpg");
+    background-image: url("images/ari-puzzle.jpg");
     background-size: 300% 300%;
     border: 1px solid rgba(255, 241, 245, 0.8);
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
     transition: top 0.28s cubic-bezier(.2,.7,.2,1), left 0.28s cubic-bezier(.2,.7,.2,1);
   }
   .tile:hover { filter: brightness(1.06); }
   .board.solved .tile { border-color: transparent; cursor: default; }
+  /* if the photo ever fails to load, tiles show numbers so the game still works visibly */
+  .board.noimg .tile {
+    background-image: none !important;
+    background-color: rgba(255,255,255,0.7);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .board.noimg .tile::after {
+    content: attr(data-label);
+    font-family: 'Fraunces', serif;
+    font-size: 34px;
+    color: var(--peony-deep);
+  }
+
+  /* option cards for the invitation */
+  .choice {
+    display: block; width: 100%; text-align: left;
+    background: rgba(255,255,255,0.6);
+    border: 2px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 20px 22px;
+    margin: 0 0 14px;
+    cursor: pointer;
+    font-family: 'Karla', sans-serif;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.18s ease;
+  }
+  .choice:hover { transform: translateY(-2px); }
+  .choice.picked { border-color: var(--peony-deep); background: var(--blush); }
+  .choice .c-title { display: block; font-family: 'Fraunces', serif; font-size: 19px; margin-bottom: 6px; color: var(--plum); }
+  .choice .c-more { display: block; font-size: 14px; color: var(--rosegold); line-height: 1.5; }
+  .choice-label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--rosegold); margin: 28px 0 14px; text-align: left; }
 
   .solved-overlay {
     position: absolute; inset: 10px;
@@ -284,7 +318,7 @@
   }
 
   .puzzle-side { padding: clamp(28px, 4vw, 48px); }
-  .puzzle-side p { font-size: 16px; line-height: 1.6; color: var(--plum); margin-bottom: 24px; }
+  .puzzle-side p { font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
   #moveCount { font-weight: 600; color: var(--peony-deep); }
 
   .puzzle-quote {
@@ -298,6 +332,123 @@
   }
   .puzzle-quote.show { opacity: 1; transform: translateY(0); }
   .puzzle-quote em { color: var(--peony-deep); }
+
+  /* ---------- Invitation ---------- */
+  .invite-card {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(32px, 5vw, 56px);
+    text-align: center;
+  }
+  .invite-card > p {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2.4vw, 26px);
+    line-height: 1.55;
+    margin-bottom: 30px;
+  }
+  .invite-card em { font-style: italic; color: var(--peony-deep); }
+  .invite-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .invite-no-note {
+    display: none;
+    margin-top: 22px;
+    font-size: 15px;
+    color: var(--rosegold);
+  }
+
+  .sig-block { display: none; margin-top: 36px; text-align: left; }
+  .sig-block.show { display: block; animation: fadeSwap 0.8s ease both; }
+  .sig-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 14px; }
+  .sig-row input {
+    font-family: 'Great Vibes', cursive;
+    font-size: 26px;
+    color: var(--plum);
+    padding: 10px 18px;
+    border: none;
+    border-bottom: 2px solid var(--rosegold);
+    background: rgba(255,255,255,0.5);
+    border-radius: 12px 12px 0 0;
+    outline: none;
+    min-width: 0;
+  }
+  .sig-row input:focus { border-bottom-color: var(--peony-deep); }
+  .sig-row input::placeholder { font-family: 'Karla', sans-serif; font-size: 14px; letter-spacing: 0.08em; }
+  .sig-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rosegold); margin-bottom: 6px; }
+  .sig-row button[disabled] { opacity: 0.5; cursor: default; transform: none; }
+
+  /* ---------- Contract ---------- */
+  .contract {
+    display: none;
+    max-width: 640px;
+    margin: 44px auto 0;
+    padding: clamp(30px, 4vw, 48px);
+    background: linear-gradient(170deg, #FFFDFE 0%, #FFF0F5 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    position: relative;
+    text-align: left;
+  }
+  .contract.show { display: block; animation: fadeSwap 1s ease both; }
+  .contract::before {
+    content: "";
+    position: absolute; inset: 10px;
+    border: 1px dashed rgba(185, 45, 93, 0.35);
+    border-radius: 14px;
+    pointer-events: none;
+  }
+  .contract h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 550;
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .contract .c-sub {
+    text-align: center;
+    font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--rosegold);
+    margin-bottom: 24px;
+  }
+  .contract ol { margin: 0 0 26px 20px; }
+  .contract li { font-size: 15.5px; line-height: 1.7; margin-bottom: 8px; }
+  .contract .c-date {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--peony-deep);
+    margin-bottom: 26px;
+  }
+  .c-sigs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .c-sig { text-align: center; }
+  .c-sig .name {
+    font-family: 'Great Vibes', cursive;
+    font-size: 34px;
+    color: var(--plum);
+    border-bottom: 1.5px solid var(--rosegold);
+    padding-bottom: 4px;
+    min-height: 46px;
+  }
+  .c-sig .role { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rosegold); margin-top: 8px; }
+  .c-foot { text-align: center; font-size: 13px; color: var(--rosegold); margin-top: 26px; font-style: italic; }
+  .inv-status {
+    display: inline-block;
+    margin: 0 0 22px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.65);
+    border: 1.5px solid var(--glass-border);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rosegold);
+  }
+  .inv-status.accepted {
+    background: var(--blush);
+    border-color: var(--peony-deep);
+    color: var(--peony-deep);
+    font-weight: 600;
+  }
 
   /* ---------- Favorites ---------- */
   .fav-toggle { position: fixed; right: clamp(20px, 4vw, 44px); bottom: clamp(20px, 4vw, 36px); z-index: 5; }
@@ -352,21 +503,22 @@
     .why-photos { grid-template-rows: none; grid-template-columns: 1fr 1fr; }
     .why-photos img { aspect-ratio: 3 / 4; }
     section.page { padding-top: 60px; padding-bottom: 60px; }
+    .c-sigs { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- Peony blooms (generated at load) -->
 <div class="blooms" id="blooms" aria-hidden="true"></div>
-
 <div class="petals" id="petals" aria-hidden="true"></div>
 
 <header>
   <div class="monogram">El Jardín de Ari</div>
   <nav>
     <a href="#why">Why Ari</a>
+    <a href="#solo">Solo Ella</a>
     <a href="#puzzle">The Puzzle</a>
+    <a href="#invite">La Invitación</a>
   </nav>
 </header>
 
@@ -378,7 +530,7 @@
   </figure>
 
   <section class="glass quote-card" aria-live="polite">
-    <p class="eyebrow">Quote of the day · Para ti</p>
+    <p class="eyebrow">Quote of the day · New one every morning</p>
     <blockquote id="quoteText"></blockquote>
     <div class="actions">
       <button class="btn-primary" id="newQuoteBtn">Another quote</button>
@@ -400,9 +552,21 @@
       <p>And here's the thing about her light. It doesn't stay on her. You watch people around her start laughing more, talking more, acting like better versions of themselves and not even noticing they're doing it. I noticed. <em>That's why this exists.</em></p>
     </div>
     <div class="why-photos">
-      <div class="frame reveal"><img src="images/ari-3.jpg" alt="Ari smiling" /></div>
+      <div class="frame reveal"><img src="images/ari-3.jpg" alt="Ari" /></div>
       <div class="frame reveal"><img src="images/ari-2.jpg" alt="Ari" /></div>
     </div>
+  </div>
+</section>
+
+<!-- ============ SOLO ELLA ============ -->
+<section class="page" id="solo">
+  <h2 class="section-title reveal">Why her, <span class="script">and only her</span></h2>
+  <p class="section-sub reveal">Solo ella</p>
+
+  <div class="glass solo-copy reveal">
+    <p>I've been a lot of places. Forty-three states, a few countries, more rooms than I can count. You meet a lot of people living like that, and after a while you learn the difference between someone you notice and someone you can't stop noticing. She's the second kind. It isn't close.</p>
+    <p>Ask me why her and the honest answer sounds simple. Nobody else ever made me want to learn the small stuff. How she takes her coffee. What song fixes her bad days. Why she laughs at the exact things she laughs at. That kind of curiosity doesn't show up on command. With her it showed up on day one and never left.</p>
+    <p>So no, there's no list this is pulled from. No plan B sitting somewhere. <em>Un jardín entero, y una sola flor que me importa.</em> That's the whole answer, and I didn't have to think about it.</p>
   </div>
 </section>
 
@@ -418,7 +582,7 @@
     </div>
 
     <div class="glass puzzle-side reveal">
-      <p>Tap a tile next to the empty space to slide it around. Put the picture back together. Take your time, she's worth it.</p>
+      <p>Tap any tile next to the empty space to slide it. Put the picture back together. Take your time, she's worth it.</p>
       <p>Moves: <span id="moveCount">0</span></p>
       <div class="actions" style="margin-top:0;">
         <button class="btn-primary" id="shuffleBtn">Shuffle</button>
@@ -427,6 +591,73 @@
       <blockquote class="puzzle-quote" id="puzzleQuote">
         "Anybody can stand back and admire the finished picture. I'd rather be the one putting it together. Piece by piece, day by day. Building something <em>with you</em> beats watching from a distance every time."
       </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LA INVITACIÓN ============ -->
+<section class="page" id="invite">
+  <h2 class="section-title reveal">La <span class="script">Invitación</span></h2>
+  <p class="section-sub reveal">This coming Wednesday</p>
+
+  <div class="glass invite-card reveal">
+    <p>Ari. The museum, this Wednesday. I'm asking properly, so pick your version and answer properly.</p>
+
+    <p class="choice-label">Choose one</p>
+    <button class="choice" id="optA" type="button">
+      <span class="c-title">The classic</span>
+      <span class="c-more">Walk the museum with me. They filled a beautiful building with art, and I'll still spend half the visit admiring you in a setting that finally keeps up. Coffee after.</span>
+    </button>
+    <button class="choice" id="optB" type="button">
+      <span class="c-title">The heist rules</span>
+      <span class="c-more">Same museum, one game: we each pick the one piece we'd steal if nobody was watching, then defend our pick over dinner. Whoever loses the argument buys dessert.</span>
+    </button>
+
+    <p class="inv-status" id="invStatus">Waiting on an answer…</p>
+
+    <div class="invite-actions" id="inviteActions">
+      <button class="btn-primary" id="yesBtn">Yes, Wednesday works</button>
+      <button class="btn-glass" id="noBtn">Not this time</button>
+    </div>
+    <p class="invite-no-note" id="noNote">Understood. No pressure — the offer stands whenever you want it.</p>
+
+    <div class="sig-block" id="sigBlock">
+      <p class="sig-label">Then let's make it official. Both parties sign below.</p>
+      <div class="sig-row">
+        <input type="text" id="sigAri" placeholder="Ari — sign your name here" maxlength="40" autocomplete="off" />
+        <button class="btn-glass" id="signAriBtn">Sign</button>
+      </div>
+      <div class="sig-row">
+        <input type="text" id="sigLuis" placeholder="Luis — sign your name here" maxlength="40" autocomplete="off" />
+        <button class="btn-glass" id="signLuisBtn">Sign</button>
+      </div>
+    </div>
+
+    <div class="contract" id="contract">
+      <h3>El Contrato del Museo</h3>
+      <p class="c-sub">A binding agreement, as binding as these things get</p>
+      <p class="c-date" id="contractDate"></p>
+      <ol>
+        <li id="clausePlan">One museum, walked slowly. Nobody rushes the good rooms.</li>
+        <li>Luis agrees to look at the art. He makes no promises about looking at it more than he looks at Ari.</li>
+        <li>Ari picks her favorite piece. Luis has to guess which one before she says it.</li>
+        <li>Coffee after. This clause is non-negotiable.</li>
+      </ol>
+      <div class="c-sigs">
+        <div class="c-sig">
+          <div class="name" id="cSigAri"></div>
+          <div class="role">Ari · La Musa</div>
+        </div>
+        <div class="c-sig">
+          <div class="name" id="cSigLuis"></div>
+          <div class="role">Luis M. · El Afortunado</div>
+        </div>
+      </div>
+      <p class="c-foot">Valid this Wednesday, and any Wednesday after that she wants.</p>
+      <div class="actions" style="justify-content:center;">
+        <button class="btn-primary" id="shareContractBtn">Send the sealed contract</button>
+      </div>
+      <p class="c-foot" style="margin-top:14px;">Sending it delivers this exact signed contract to the other phone — that's how you both hold a copy.</p>
     </div>
   </div>
 </section>
@@ -440,11 +671,190 @@
 
 <div class="toast" id="toast"></div>
 
-<footer>Grown with intention · Houston, TX</footer>
+<footer>Grown with intention · Luis M.</footer>
 
 <script>
-  // ---------- Quotes (original, written for Ari) ----------
-  const QUOTES = [
+(function () {
+  "use strict";
+
+  // ---------- Safe storage (works even where localStorage is blocked) ----------
+  var mem = {};
+  var store = {
+    get: function (k, d) {
+      try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }
+      catch (e) { return (k in mem) ? mem[k] : d; }
+    },
+    set: function (k, v) {
+      try { localStorage.setItem(k, JSON.stringify(v)); }
+      catch (e) { mem[k] = v; }
+    }
+  };
+
+  var toast = document.getElementById("toast");
+  var toastTimer;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
+  }
+
+  // ================================================================
+  // PUZZLE — initialized first so nothing else can ever break it
+  // ================================================================
+  var N = 3;
+  var boardEl = document.getElementById("board");
+  var inner = document.getElementById("boardInner");
+  var moveCountEl = document.getElementById("moveCount");
+  var puzzleQuote = document.getElementById("puzzleQuote");
+  var state = [];
+  var tiles = {};
+  var moves = 0;
+  var solvedFlag = false;
+
+  function goalState() {
+    var s = [], n = 0, r, c;
+    for (r = 0; r < N; r++) {
+      s.push([]);
+      for (c = 0; c < N; c++) { s[r].push(n === N * N - 1 ? null : n); n++; }
+    }
+    return s;
+  }
+
+  function buildTiles() {
+    inner.innerHTML = "";
+    tiles = {};
+    for (var n = 0; n < N * N - 1; n++) {
+      var t = document.createElement("div");
+      t.className = "tile";
+      t.dataset.n = n;
+      t.dataset.label = n + 1;
+      var gr = Math.floor(n / N), gc = n % N;
+      t.style.backgroundPosition = (gc * 50) + "% " + (gr * 50) + "%";
+      tiles[n] = t;
+      inner.appendChild(t);
+    }
+  }
+
+  // If the puzzle photo can't load, switch to numbered tiles so moves stay visible
+  (function () {
+    var probe = new Image();
+    probe.onerror = function () { boardEl.classList.add("noimg"); };
+    probe.src = "images/ari-puzzle.jpg";
+  })();
+
+  function positionTiles() {
+    for (var r = 0; r < N; r++) {
+      for (var c = 0; c < N; c++) {
+        var n = state[r][c];
+        if (n === null) continue;
+        tiles[n].style.top = (r * 100 / N) + "%";
+        tiles[n].style.left = (c * 100 / N) + "%";
+      }
+    }
+  }
+
+  function findTile(n) {
+    for (var r = 0; r < N; r++)
+      for (var c = 0; c < N; c++)
+        if (state[r][c] === n) return [r, c];
+    return null;
+  }
+
+  function tryMove(n) {
+    if (solvedFlag) return false;
+    var pos = findTile(n), empty = findTile(null);
+    if (!pos || !empty) return false;
+    if (Math.abs(pos[0] - empty[0]) + Math.abs(pos[1] - empty[1]) !== 1) return false;
+    state[empty[0]][empty[1]] = n;
+    state[pos[0]][pos[1]] = null;
+    positionTiles();
+    moves++;
+    moveCountEl.textContent = moves;
+    checkSolved();
+    return true;
+  }
+
+  // Event delegation on the board. pointerdown gives instant response on
+  // touch screens; click covers everything else. A short suppression window
+  // stops the click that follows a pointerdown from moving a second tile.
+  var suppressClickUntil = 0;
+  function onTileHit(e) {
+    if (e.type === "click" && Date.now() < suppressClickUntil) return;
+    var t = e.target.closest ? e.target.closest(".tile") : null;
+    if (!t) return;
+    var moved = tryMove(parseInt(t.dataset.n, 10));
+    if (e.type === "pointerdown" && moved) suppressClickUntil = Date.now() + 450;
+  }
+  inner.addEventListener("pointerdown", onTileHit);
+  inner.addEventListener("click", onTileHit);
+
+  function checkSolved() {
+    var goal = goalState();
+    for (var r = 0; r < N; r++)
+      for (var c = 0; c < N; c++)
+        if (state[r][c] !== goal[r][c]) return;
+    solvePuzzle();
+  }
+
+  function solvePuzzle() {
+    solvedFlag = true;
+    var last = document.createElement("div");
+    last.className = "tile";
+    last.style.backgroundPosition = "100% 100%";
+    last.style.top = ((N - 1) * 100 / N) + "%";
+    last.style.left = ((N - 1) * 100 / N) + "%";
+    last.style.opacity = "0";
+    last.style.transition = "opacity 1s ease";
+    inner.appendChild(last);
+    requestAnimationFrame(function () { last.style.opacity = "1"; });
+    boardEl.classList.add("solved");
+    puzzleQuote.classList.add("show");
+    showToast("You built her back. ♥");
+  }
+
+  function shuffle() {
+    solvedFlag = false;
+    boardEl.classList.remove("solved");
+    puzzleQuote.classList.remove("show");
+    state = goalState();
+    buildTiles();
+    var lastMoved = -1;
+    for (var i = 0; i < 140; i++) {
+      var empty = findTile(null);
+      var er = empty[0], ec = empty[1];
+      var candidates = [];
+      if (er > 0) candidates.push(state[er - 1][ec]);
+      if (er < N - 1) candidates.push(state[er + 1][ec]);
+      if (ec > 0) candidates.push(state[er][ec - 1]);
+      if (ec < N - 1) candidates.push(state[er][ec + 1]);
+      var pool = candidates.filter(function (x) { return x !== lastMoved; });
+      if (!pool.length) pool = candidates;
+      var n = pool[Math.floor(Math.random() * pool.length)];
+      var pos = findTile(n);
+      state[er][ec] = n;
+      state[pos[0]][pos[1]] = null;
+      lastMoved = n;
+    }
+    moves = 0;
+    moveCountEl.textContent = "0";
+    positionTiles();
+  }
+
+  document.getElementById("shuffleBtn").addEventListener("click", shuffle);
+  document.getElementById("solveBtn").addEventListener("click", function () {
+    state = goalState();
+    buildTiles();
+    positionTiles();
+    solvePuzzle();
+  });
+
+  shuffle();
+
+  // ================================================================
+  // DAILY QUOTE — a different one every day, automatically
+  // ================================================================
+  var QUOTES = [
     "Pretty is everywhere. What you have is rarer than that.",
     "You walk in like you already know everybody in the room. Give it an hour and you do.",
     "Eres el tipo de belleza que no pide permiso.",
@@ -464,23 +874,32 @@
     "Whatever room you're in becomes the room to be in.",
     "Even Eden needed one flower to set the standard.",
     "Dream bigger. The rooms that felt too small were never yours anyway.",
-    "Tú no llegas a los lugares. Los lugares te estaban esperando."
+    "Tú no llegas a los lugares. Los lugares te estaban esperando.",
+    "Front camera, back camera, no camera. Same result.",
+    "Te ves bien hasta en las fotos que ibas a borrar.",
+    "Half the city gets dressed up hoping for the effect you get rolling out of bed.",
+    "You've never once walked into a place and gone unnoticed. Not once.",
+    "El espejo tiene el mejor trabajo de la ciudad.",
+    "You take a regular Tuesday and make it feel like an occasion.",
+    "Nadie te enseñó a brillar. Naciste sabiendo.",
+    "It takes most people a lifetime to get that comfortable being themselves. You made it look like a starting point.",
+    "Good lighting follows certain people around. Yours is built in.",
+    "Que no se te olvide: el estándar lo pones tú.",
+    "Somewhere out there is a peony trying its best. It's not enough."
   ];
 
-  const PHOTOS = ["images/ari-1.jpg", "images/ari-2.jpg", "images/ari-3.jpg", "images/ari-4.jpg"];
+  var PHOTOS = ["images/ari-1.jpg", "images/ari-5.jpg"];
 
-  // ---------- Daily quote ----------
-  const dayIndex = Math.floor(Date.now() / 86400000);
-  let quoteIdx = dayIndex % QUOTES.length;
-  let photoIdx = dayIndex % PHOTOS.length;
+  var dayIndex = Math.floor(Date.now() / 86400000);
+  var quoteIdx = dayIndex % QUOTES.length;   // rotates daily on its own
+  var photoIdx = dayIndex % PHOTOS.length;
 
-  const quoteText = document.getElementById("quoteText");
-  const ariPhoto = document.getElementById("ariPhoto");
-  const toast = document.getElementById("toast");
-  const saveBtn = document.getElementById("saveBtn");
+  var quoteText = document.getElementById("quoteText");
+  var ariPhoto = document.getElementById("ariPhoto");
+  var saveBtn = document.getElementById("saveBtn");
 
   function plainQuote(html) {
-    const d = document.createElement("div");
+    var d = document.createElement("div");
     d.innerHTML = html;
     return d.textContent;
   }
@@ -495,376 +914,386 @@
 
   function swapPhoto() {
     ariPhoto.classList.add("fading");
-    setTimeout(() => {
+    setTimeout(function () {
       photoIdx = (photoIdx + 1) % PHOTOS.length;
       ariPhoto.src = PHOTOS[photoIdx];
       ariPhoto.classList.remove("fading");
     }, 900);
   }
 
-  document.getElementById("newQuoteBtn").addEventListener("click", () => {
+  document.getElementById("newQuoteBtn").addEventListener("click", function () {
     quoteIdx = (quoteIdx + 1) % QUOTES.length;
     renderQuote();
     swapPhoto();
   });
 
   // ---------- Favorites ----------
-  const FAV_KEY = "ari-favorites";
-  const getFavs = () => JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
-  const setFavs = (f) => localStorage.setItem(FAV_KEY, JSON.stringify(f));
+  var FAV_KEY = "ari-favorites";
 
   function updateSaveState() {
-    const saved = getFavs().includes(plainQuote(QUOTES[quoteIdx]));
+    var saved = store.get(FAV_KEY, []).indexOf(plainQuote(QUOTES[quoteIdx])) !== -1;
     saveBtn.textContent = saved ? "♥ Saved" : "♡ Save";
     saveBtn.classList.toggle("saved", saved);
   }
 
-  saveBtn.addEventListener("click", () => {
-    const current = plainQuote(QUOTES[quoteIdx]);
-    let favs = getFavs();
-    if (favs.includes(current)) {
-      favs = favs.filter(q => q !== current);
-      showToast("Removed from favorites");
-    } else {
-      favs.push(current);
-      showToast("Saved to favorites ♥");
-    }
-    setFavs(favs);
+  saveBtn.addEventListener("click", function () {
+    var current = plainQuote(QUOTES[quoteIdx]);
+    var favs = store.get(FAV_KEY, []);
+    var i = favs.indexOf(current);
+    if (i !== -1) { favs.splice(i, 1); showToast("Removed from favorites"); }
+    else { favs.push(current); showToast("Saved to favorites ♥"); }
+    store.set(FAV_KEY, favs);
     updateSaveState();
     renderFavs();
   });
 
-  const favPanel = document.getElementById("favPanel");
-  const favList = document.getElementById("favList");
-  document.getElementById("favToggle").addEventListener("click", () => {
+  var favPanel = document.getElementById("favPanel");
+  var favList = document.getElementById("favList");
+  document.getElementById("favToggle").addEventListener("click", function () {
     favPanel.classList.toggle("open");
     renderFavs();
   });
 
   function renderFavs() {
-    const favs = getFavs();
+    var favs = store.get(FAV_KEY, []);
     favList.innerHTML = "";
     if (!favs.length) {
       favList.innerHTML = '<p class="fav-empty">Nothing saved yet — tap ♡ on a quote you love.</p>';
       return;
     }
-    favs.forEach((q, i) => {
-      const item = document.createElement("div");
+    favs.forEach(function (q, i) {
+      var item = document.createElement("div");
       item.className = "fav-item";
-      const span = document.createElement("span");
+      var span = document.createElement("span");
       span.textContent = "\u201C" + q + "\u201D";
-      const del = document.createElement("button");
+      var del = document.createElement("button");
       del.textContent = "✕";
       del.setAttribute("aria-label", "Remove favorite");
-      del.addEventListener("click", () => {
-        const favs2 = getFavs();
-        favs2.splice(i, 1);
-        setFavs(favs2);
+      del.addEventListener("click", function () {
+        var f = store.get(FAV_KEY, []);
+        f.splice(i, 1);
+        store.set(FAV_KEY, f);
         renderFavs();
         updateSaveState();
       });
-      item.append(span, del);
+      item.appendChild(span);
+      item.appendChild(del);
       favList.appendChild(item);
     });
   }
 
-  // ---------- Share ----------
-  document.getElementById("shareBtn").addEventListener("click", async () => {
-    const text = "\u201C" + plainQuote(QUOTES[quoteIdx]) + "\u201D — El Jardín de Ari";
+  // ---------- Share quote ----------
+  document.getElementById("shareBtn").addEventListener("click", function () {
+    var text = "\u201C" + plainQuote(QUOTES[quoteIdx]) + "\u201D — El Jardín de Ari";
     if (navigator.share) {
-      try { await navigator.share({ text }); } catch (_) {}
-    } else {
-      await navigator.clipboard.writeText(text);
-      showToast("Copied to clipboard");
+      navigator.share({ text: text })["catch"](function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () { showToast("Copied to clipboard"); });
     }
   });
 
-  let toastTimer;
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
-  }
+  renderQuote();
 
-  // ---------- Realistic peony generator ----------
-  // Peonies are dense, ruffled, many-layered. Each bloom is built from ~40
-  // individually shaped petals with gradients, edge irregularity and depth shadows.
-  function mulberry32(seed) {
-    return function () {
-      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
-      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-      return ((t ^ t >>> 14) >>> 0) / 4294967296;
-    };
-  }
-
-  function petalPath(w, h, rng) {
-    // Petal points up from base (0,0). Top edge is ruffled with random lobes.
-    const ruffles = 4 + Math.floor(rng() * 3);
-    const lx = -0.46 * w, rx = 0.46 * w, topY = -0.85 * h;
-    let d = `M 0 0 C ${(-0.56 * w).toFixed(1)} ${(-0.2 * h).toFixed(1)}, ${(-0.68 * w).toFixed(1)} ${(-0.58 * h).toFixed(1)}, ${lx.toFixed(1)} ${topY.toFixed(1)}`;
-    let x = lx;
-    const step = (rx - lx) / ruffles;
-    for (let i = 0; i < ruffles; i++) {
-      const nx = x + step;
-      const midx = x + step / 2 + (rng() - 0.5) * step * 0.3;
-      const bumpY = -h * (0.92 + rng() * 0.16);
-      const endY = i === ruffles - 1 ? topY : -h * (0.78 + rng() * 0.08);
-      d += ` Q ${midx.toFixed(1)} ${bumpY.toFixed(1)}, ${nx.toFixed(1)} ${endY.toFixed(1)}`;
-      x = nx;
-    }
-    d += ` C ${(0.68 * w).toFixed(1)} ${(-0.58 * h).toFixed(1)}, ${(0.56 * w).toFixed(1)} ${(-0.2 * h).toFixed(1)}, 0 0 Z`;
+  // ================================================================
+  // LA INVITACIÓN — museum date + contract
+  // ================================================================
+  function nextWednesday() {
+    var d = new Date();
+    var offset = (3 - d.getDay() + 7) % 7; // 3 = Wednesday
+    d.setDate(d.getDate() + offset);
     return d;
   }
+  function fmtDate(d) {
+    return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  }
 
-  function makePeony(id, seed) {
-    const rng = mulberry32(seed);
-    // outer layers pale, inner layers deep — like a real pink peony
-    const layers = [
-      { n: 9,  w: 66, h: 82, r: 26, tip: "#FFEBF1", base: "#F5B4CB" },
-      { n: 8,  w: 56, h: 68, r: 21, tip: "#FFDCE8", base: "#F09DBA" },
-      { n: 7,  w: 46, h: 54, r: 15, tip: "#FAC4D7", base: "#E77BA2" },
-      { n: 6,  w: 34, h: 42, r: 10, tip: "#F3A6C1", base: "#DA5E8C" },
-      { n: 12, w: 18, h: 24, r: 4,  tip: "#EC87AC", base: "#C24672" }
-    ];
-    let defs = "";
-    let body = "";
-    layers.forEach((L, li) => {
-      const gid = `${id}g${li}`;
-      defs += `<linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="${L.tip}"/>
-        <stop offset="0.72" stop-color="${L.base}"/>
-        <stop offset="1" stop-color="${L.base}" stop-opacity="0.95"/>
-      </linearGradient>`;
-      let petals = "";
-      const baseAngle = rng() * 360;
-      for (let i = 0; i < L.n; i++) {
-        const a = baseAngle + (360 / L.n) * i + (rng() - 0.5) * 14;
-        const s = 0.9 + rng() * 0.22;
-        const d = petalPath(L.w, L.h, rng);
-        petals += `<path d="${d}" fill="url(#${gid})"
-          transform="rotate(${a.toFixed(1)}) translate(0 ${-L.r}) scale(${s.toFixed(2)})"/>`;
+  var INV_KEY = "ari-invite";
+
+  // ----- shared visibility: the sealed contract travels inside a link -----
+  function encodeInv(o) {
+    try {
+      var raw = JSON.stringify({ a: o.answer, o: o.option, n1: o.ari, n2: o.luis, t: o.sealedAt || Date.now() });
+      return btoa(unescape(encodeURIComponent(raw))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    } catch (e) { return ""; }
+  }
+  function decodeInv(s) {
+    try {
+      s = s.replace(/-/g, "+").replace(/_/g, "/");
+      while (s.length % 4) s += "=";
+      var o = JSON.parse(decodeURIComponent(escape(atob(s))));
+      if (o.a !== "yes" || !o.n1 || !o.n2) return null;
+      return { answer: "yes", option: o.o === "B" ? "B" : "A", ari: String(o.n1).slice(0, 40), luis: String(o.n2).slice(0, 40), sealedAt: o.t };
+    } catch (e) { return null; }
+  }
+  function contractLink(o) {
+    return location.origin + location.pathname + "?c=" + encodeInv(o) + "#invite";
+  }
+  var yesBtn = document.getElementById("yesBtn");
+  var noBtn = document.getElementById("noBtn");
+  var noNote = document.getElementById("noNote");
+  var sigBlock = document.getElementById("sigBlock");
+  var contract = document.getElementById("contract");
+  var sigAri = document.getElementById("sigAri");
+  var sigLuis = document.getElementById("sigLuis");
+  var signAriBtn = document.getElementById("signAriBtn");
+  var signLuisBtn = document.getElementById("signLuisBtn");
+  var optA = document.getElementById("optA");
+  var optB = document.getElementById("optB");
+  var clausePlan = document.getElementById("clausePlan");
+
+  var PLANS = {
+    A: "One museum, walked slowly. Nobody rushes the good rooms.",
+    B: "One museum, heist rules. Each party picks the one piece they'd steal, then defends it over dinner. The losing argument buys dessert."
+  };
+
+  var inv = store.get(INV_KEY, { answer: null, option: null, ari: "", luis: "" });
+
+  // If this page was opened from a contract link, that sealed contract wins:
+  // it saves locally too, so both phones now show the same acceptance.
+  var incoming = null;
+  try {
+    var m = location.search.match(/[?&]c=([^&]+)/);
+    if (m) incoming = decodeInv(m[1]);
+  } catch (e) {}
+  if (incoming) {
+    inv = incoming;
+    store.set(INV_KEY, inv);
+    setTimeout(function () {
+      showToast("Contract received — it's official ♥");
+      var el = document.getElementById("invite");
+      if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth" });
+    }, 600);
+  }
+
+  function renderInvite() {
+    optA.classList.toggle("picked", inv.option === "A");
+    optB.classList.toggle("picked", inv.option === "B");
+    noNote.style.display = inv.answer === "no" ? "block" : "none";
+    sigBlock.classList.toggle("show", inv.answer === "yes");
+    if (inv.ari) { sigAri.value = inv.ari; sigAri.disabled = true; signAriBtn.disabled = true; signAriBtn.textContent = "Signed ♥"; }
+    if (inv.luis) { sigLuis.value = inv.luis; sigLuis.disabled = true; signLuisBtn.disabled = true; signLuisBtn.textContent = "Signed ♥"; }
+
+    var statusEl = document.getElementById("invStatus");
+    var sealed = inv.answer === "yes" && inv.ari && inv.luis;
+    if (sealed) {
+      statusEl.textContent = "Accepted ♥ Signed by " + inv.ari + " & " + inv.luis + " · " + fmtDate(nextWednesday());
+      statusEl.classList.add("accepted");
+    } else if (inv.answer === "yes") {
+      var waiting = !inv.ari && !inv.luis ? "both signatures" : (!inv.ari ? "Ari's signature" : "Luis's signature");
+      statusEl.textContent = "Accepted ♥ Waiting on " + waiting;
+      statusEl.classList.add("accepted");
+    } else if (inv.answer === "no") {
+      statusEl.textContent = "Answer: not this time";
+      statusEl.classList.remove("accepted");
+    } else {
+      statusEl.textContent = "Waiting on an answer…";
+      statusEl.classList.remove("accepted");
+    }
+
+    if (sealed) {
+      if (!inv.sealedAt) { inv.sealedAt = Date.now(); store.set(INV_KEY, inv); }
+      clausePlan.textContent = PLANS[inv.option] || PLANS.A;
+      document.getElementById("cSigAri").textContent = inv.ari;
+      document.getElementById("cSigLuis").textContent = inv.luis;
+      document.getElementById("contractDate").textContent = "Set for " + fmtDate(nextWednesday());
+      contract.classList.add("show");
+    }
+  }
+
+  function pickOption(which) {
+    inv.option = which;
+    store.set(INV_KEY, inv);
+    renderInvite();
+  }
+  optA.addEventListener("click", function () { pickOption("A"); });
+  optB.addEventListener("click", function () { pickOption("B"); });
+
+  yesBtn.addEventListener("click", function () {
+    if (!inv.option) {
+      showToast("Pick your version first");
+      if (optA.scrollIntoView) optA.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    inv.answer = "yes";
+    store.set(INV_KEY, inv);
+    renderInvite();
+    showToast("She said yes. Obviously.");
+    if (sigBlock.scrollIntoView) sigBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  noBtn.addEventListener("click", function () {
+    inv.answer = "no";
+    store.set(INV_KEY, inv);
+    renderInvite();
+  });
+
+  signAriBtn.addEventListener("click", function () {
+    var v = sigAri.value.trim();
+    if (!v) { showToast("Sign your name first"); sigAri.focus(); return; }
+    inv.ari = v;
+    store.set(INV_KEY, inv);
+    renderInvite();
+  });
+
+  signLuisBtn.addEventListener("click", function () {
+    var v = sigLuis.value.trim();
+    if (!v) { showToast("Sign your name first"); sigLuis.focus(); return; }
+    inv.luis = v;
+    store.set(INV_KEY, inv);
+    renderInvite();
+  });
+
+  document.getElementById("shareContractBtn").addEventListener("click", function () {
+    var link = contractLink(inv);
+    var text = "El Contrato del Museo — " + fmtDate(nextWednesday()) + ". " +
+      (PLANS[inv.option] || PLANS.A) + " Signed: " + inv.ari + " & " + inv.luis + ".";
+    if (navigator.share) {
+      navigator.share({ text: text, url: link })["catch"](function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + " " + link).then(function () { showToast("Contract link copied — send it over"); });
+    }
+  });
+
+  renderInvite();
+
+  // ================================================================
+  // DECORATION — peonies, petals, reveals (kept in try/catch so a
+  // decorative failure can never break the interactive features)
+  // ================================================================
+  try {
+    // Scroll reveal
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+    }
+
+    // Realistic layered peony generator
+    function mulberry32(seed) {
+      return function () {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    function petalPath(w, h, rng) {
+      var ruffles = 4 + Math.floor(rng() * 3);
+      var lx = -0.46 * w, rx = 0.46 * w, topY = -0.85 * h;
+      var d = "M 0 0 C " + (-0.56 * w).toFixed(1) + " " + (-0.2 * h).toFixed(1) + ", " +
+              (-0.68 * w).toFixed(1) + " " + (-0.58 * h).toFixed(1) + ", " +
+              lx.toFixed(1) + " " + topY.toFixed(1);
+      var x = lx, step = (rx - lx) / ruffles;
+      for (var i = 0; i < ruffles; i++) {
+        var nx = x + step;
+        var midx = x + step / 2 + (rng() - 0.5) * step * 0.3;
+        var bumpY = -h * (0.92 + rng() * 0.16);
+        var endY = i === ruffles - 1 ? topY : -h * (0.78 + rng() * 0.08);
+        d += " Q " + midx.toFixed(1) + " " + bumpY.toFixed(1) + ", " + nx.toFixed(1) + " " + endY.toFixed(1);
+        x = nx;
       }
-      body += `<g filter="url(#${id}shade)" opacity="${li === 0 ? 0.96 : 1}">${petals}</g>`;
+      d += " C " + (0.68 * w).toFixed(1) + " " + (-0.58 * h).toFixed(1) + ", " +
+           (0.56 * w).toFixed(1) + " " + (-0.2 * h).toFixed(1) + ", 0 0 Z";
+      return d;
+    }
+
+    function makePeony(id, seed) {
+      var rng = mulberry32(seed);
+      var layers = [
+        { n: 9,  w: 66, h: 82, r: 26, tip: "#FFEBF1", base: "#F5B4CB" },
+        { n: 8,  w: 56, h: 68, r: 21, tip: "#FFDCE8", base: "#F09DBA" },
+        { n: 7,  w: 46, h: 54, r: 15, tip: "#FAC4D7", base: "#E77BA2" },
+        { n: 6,  w: 34, h: 42, r: 10, tip: "#F3A6C1", base: "#DA5E8C" },
+        { n: 12, w: 18, h: 24, r: 4,  tip: "#EC87AC", base: "#C24672" }
+      ];
+      var defs = "", body = "";
+      layers.forEach(function (L, li) {
+        var gid = id + "g" + li;
+        defs += '<linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0" stop-color="' + L.tip + '"/>' +
+          '<stop offset="0.72" stop-color="' + L.base + '"/>' +
+          '<stop offset="1" stop-color="' + L.base + '" stop-opacity="0.95"/></linearGradient>';
+        var petals = "";
+        var baseAngle = rng() * 360;
+        for (var i = 0; i < L.n; i++) {
+          var a = baseAngle + (360 / L.n) * i + (rng() - 0.5) * 14;
+          var s = 0.9 + rng() * 0.22;
+          petals += '<path d="' + petalPath(L.w, L.h, rng) + '" fill="url(#' + gid + ')" ' +
+            'transform="rotate(' + a.toFixed(1) + ') translate(0 ' + (-L.r) + ') scale(' + s.toFixed(2) + ')"/>';
+        }
+        body += '<g filter="url(#' + id + 'shade)" opacity="' + (li === 0 ? 0.96 : 1) + '">' + petals + "</g>";
+      });
+      body += '<circle r="7" fill="#B23A66" opacity="0.55"/><circle r="3.5" fill="#F7CBDA" opacity="0.8"/>';
+      return '<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><defs>' + defs +
+        '<filter id="' + id + 'shade" x="-40%" y="-40%" width="180%" height="180%">' +
+        '<feDropShadow dx="0" dy="2.5" stdDeviation="3" flood-color="#8E2A50" flood-opacity="0.28"/></filter>' +
+        '<filter id="' + id + 'rough">' +
+        '<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="' + seed + '" result="n"/>' +
+        '<feDisplacementMap in="SourceGraphic" in2="n" scale="5"/></filter>' +
+        '</defs><g transform="translate(120 120)" filter="url(#' + id + 'rough)">' + body + "</g></svg>";
+    }
+
+    var bloomsHost = document.getElementById("blooms");
+    [
+      { cls: "bloom bg bg1", seed: 11 },
+      { cls: "bloom bg bg2", seed: 23 },
+      { cls: "bloom b1", seed: 3 },
+      { cls: "bloom b2", seed: 7 },
+      { cls: "bloom b3", seed: 15 },
+      { cls: "bloom b4", seed: 19 }
+    ].forEach(function (b, i) {
+      var div = document.createElement("div");
+      div.className = b.cls;
+      div.innerHTML = makePeony("p" + i, b.seed);
+      bloomsHost.appendChild(div);
     });
-    // faint center glow where the petals gather
-    body += `<circle r="7" fill="#B23A66" opacity="0.55"/>
-             <circle r="3.5" fill="#F7CBDA" opacity="0.8"/>`;
-    return `<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        ${defs}
-        <filter id="${id}shade" x="-40%" y="-40%" width="180%" height="180%">
-          <feDropShadow dx="0" dy="2.5" stdDeviation="3" flood-color="#8E2A50" flood-opacity="0.28"/>
-        </filter>
-        <filter id="${id}rough">
-          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="${seed}" result="n"/>
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
-        </filter>
-      </defs>
-      <g transform="translate(120 120)" filter="url(#${id}rough)">${body}</g>
-    </svg>`;
-  }
-
-  const bloomsHost = document.getElementById("blooms");
-  const bloomSpecs = [
-    { cls: "bloom bg bg1", seed: 11 },
-    { cls: "bloom bg bg2", seed: 23 },
-    { cls: "bloom b1", seed: 3 },
-    { cls: "bloom b2", seed: 7 },
-    { cls: "bloom b3", seed: 15 },
-    { cls: "bloom b4", seed: 19 }
-  ];
-  bloomSpecs.forEach((b, i) => {
-    const div = document.createElement("div");
-    div.className = b.cls;
-    div.innerHTML = makePeony("p" + i, b.seed);
-    bloomsHost.appendChild(div);
-  });
-  // soft bokeh dots for photographic depth
-  for (let i = 0; i < 7; i++) {
-    const dot = document.createElement("div");
-    dot.className = "bokeh";
-    const s = 40 + Math.random() * 120;
-    dot.style.width = dot.style.height = s + "px";
-    dot.style.left = Math.random() * 100 + "%";
-    dot.style.top = Math.random() * 100 + "%";
-    dot.style.opacity = 0.25 + Math.random() * 0.3;
-    bloomsHost.appendChild(dot);
-  }
-
-  // ---------- Falling petals (real petal silhouettes) ----------
-  const petals = document.getElementById("petals");
-  const PETAL_SVG = `<svg viewBox="0 0 40 38" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFDFEA"/><stop offset="0.6" stop-color="#F5A9C4"/><stop offset="1" stop-color="#E67FA6"/>
-    </linearGradient></defs>
-    <path d="M20 36 C8 32 2 19 6 9 C9 2 16 0 20 5 C24 0 31 2 34 9 C38 19 32 32 20 36 Z" fill="url(#pg)"/>
-    <path d="M20 36 C15 27 14 15 18 6" stroke="rgba(255,255,255,0.55)" stroke-width="1.1" fill="none"/>
-  </svg>`;
-  // one shared gradient def so every petal can reference it
-  const gradHolder = document.createElement("div");
-  gradHolder.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;";
-  gradHolder.innerHTML = PETAL_SVG;
-  petals.appendChild(gradHolder);
-
-  const count = window.innerWidth < 700 ? 9 : 16;
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement("div");
-    p.className = "petal";
-    p.innerHTML = `<svg viewBox="0 0 40 38"><path d="M20 36 C8 32 2 19 6 9 C9 2 16 0 20 5 C24 0 31 2 34 9 C38 19 32 32 20 36 Z" fill="url(#pg)"/><path d="M20 36 C15 27 14 15 18 6" stroke="rgba(255,255,255,0.55)" stroke-width="1.1" fill="none"/></svg>`;
-    p.style.left = Math.random() * 100 + "vw";
-    p.style.width = (16 + Math.random() * 16) + "px";
-    p.style.setProperty("--sway", (Math.random() * 180 - 90) + "px");
-    p.style.animationDuration = 10 + Math.random() * 11 + "s";
-    p.style.animationDelay = -Math.random() * 16 + "s";
-    p.style.opacity = 0.55 + Math.random() * 0.4;
-    const flutter = p.querySelector("svg");
-    flutter.style.animationDuration = (2.4 + Math.random() * 2) + "s";
-    flutter.style.animationDelay = -Math.random() * 3 + "s";
-    petals.appendChild(p);
-  }
-
-  // ---------- Scroll reveal ----------
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-  }, { threshold: 0.15 });
-  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
-
-  // ---------- Sliding puzzle (3x3, ari-1.jpg) ----------
-  const N = 3;
-  const boardEl = document.getElementById("board");
-  const inner = document.getElementById("boardInner");
-  const moveCountEl = document.getElementById("moveCount");
-  const puzzleQuote = document.getElementById("puzzleQuote");
-
-  // state[row][col] = tile number 0..7, or null for the empty slot (tile 8 = bottom-right hidden)
-  let state = [];
-  let tiles = {}; // tileNumber -> element
-  let moves = 0;
-  let solvedFlag = false;
-
-  function goalState() {
-    const s = [];
-    let n = 0;
-    for (let r = 0; r < N; r++) {
-      s.push([]);
-      for (let c = 0; c < N; c++) s[r].push(n === N * N - 1 ? null : n), n++;
+    for (var i = 0; i < 7; i++) {
+      var dot = document.createElement("div");
+      dot.className = "bokeh";
+      var s = 40 + Math.random() * 120;
+      dot.style.width = dot.style.height = s + "px";
+      dot.style.left = Math.random() * 100 + "%";
+      dot.style.top = Math.random() * 100 + "%";
+      dot.style.opacity = 0.25 + Math.random() * 0.3;
+      bloomsHost.appendChild(dot);
     }
-    return s;
-  }
 
-  function buildTiles() {
-    inner.innerHTML = "";
-    tiles = {};
-    for (let n = 0; n < N * N - 1; n++) {
-      const t = document.createElement("div");
-      t.className = "tile";
-      const gr = Math.floor(n / N), gc = n % N;
-      t.style.backgroundPosition = (gc * 50) + "% " + (gr * 50) + "%";
-      t.addEventListener("click", () => tryMove(n));
-      tiles[n] = t;
-      inner.appendChild(t);
+    // Falling petals with real petal silhouettes
+    var petalsHost = document.getElementById("petals");
+    var petalMarkup = '<svg viewBox="0 0 40 38"><path d="M20 36 C8 32 2 19 6 9 C9 2 16 0 20 5 C24 0 31 2 34 9 C38 19 32 32 20 36 Z" fill="url(#pg)"/>' +
+      '<path d="M20 36 C15 27 14 15 18 6" stroke="rgba(255,255,255,0.55)" stroke-width="1.1" fill="none"/></svg>';
+    var gradHolder = document.createElement("div");
+    gradHolder.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;";
+    gradHolder.innerHTML = '<svg><defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="#FFDFEA"/><stop offset="0.6" stop-color="#F5A9C4"/>' +
+      '<stop offset="1" stop-color="#E67FA6"/></linearGradient></defs></svg>';
+    petalsHost.appendChild(gradHolder);
+
+    var count = window.innerWidth < 700 ? 9 : 16;
+    for (var j = 0; j < count; j++) {
+      var p = document.createElement("div");
+      p.className = "petal";
+      p.innerHTML = petalMarkup;
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.width = (16 + Math.random() * 16) + "px";
+      p.style.setProperty("--sway", (Math.random() * 180 - 90) + "px");
+      p.style.animationDuration = 10 + Math.random() * 11 + "s";
+      p.style.animationDelay = -Math.random() * 16 + "s";
+      p.style.opacity = 0.55 + Math.random() * 0.4;
+      var fl = p.querySelector("svg");
+      fl.style.animationDuration = (2.4 + Math.random() * 2) + "s";
+      fl.style.animationDelay = -Math.random() * 3 + "s";
+      petalsHost.appendChild(p);
     }
-  }
+  } catch (e) { /* decoration failed quietly; app still works */ }
 
-  function positionTiles() {
-    for (let r = 0; r < N; r++) {
-      for (let c = 0; c < N; c++) {
-        const n = state[r][c];
-        if (n === null) continue;
-        tiles[n].style.top = (r * 100 / N) + "%";
-        tiles[n].style.left = (c * 100 / N) + "%";
-      }
-    }
-  }
-
-  function findTile(n) {
-    for (let r = 0; r < N; r++)
-      for (let c = 0; c < N; c++)
-        if (state[r][c] === n) return [r, c];
-  }
-
-  function tryMove(n, countIt = true) {
-    if (solvedFlag) return false;
-    const [r, c] = findTile(n);
-    const [er, ec] = findTile(null);
-    if (Math.abs(r - er) + Math.abs(c - ec) !== 1) return false;
-    state[er][ec] = n;
-    state[r][c] = null;
-    positionTiles();
-    if (countIt) {
-      moves++;
-      moveCountEl.textContent = moves;
-      checkSolved();
-    }
-    return true;
-  }
-
-  function checkSolved() {
-    const goal = goalState();
-    for (let r = 0; r < N; r++)
-      for (let c = 0; c < N; c++)
-        if (state[r][c] !== goal[r][c]) return;
-    solvePuzzle();
-  }
-
-  function solvePuzzle() {
-    solvedFlag = true;
-    // Fill in the missing corner so the full photo shows
-    const last = document.createElement("div");
-    last.className = "tile";
-    last.style.backgroundPosition = "100% 100%";
-    last.style.top = ((N - 1) * 100 / N) + "%";
-    last.style.left = ((N - 1) * 100 / N) + "%";
-    last.style.opacity = "0";
-    last.style.transition = "opacity 1s ease";
-    inner.appendChild(last);
-    requestAnimationFrame(() => { last.style.opacity = "1"; });
-    boardEl.classList.add("solved");
-    puzzleQuote.classList.add("show");
-    showToast("You built her back. ♥");
-  }
-
-  function shuffle() {
-    solvedFlag = false;
-    boardEl.classList.remove("solved");
-    puzzleQuote.classList.remove("show");
-    state = goalState();
-    buildTiles();
-    // Shuffle with random valid moves so it's always solvable
-    let lastMoved = -1;
-    for (let i = 0; i < 140; i++) {
-      const [er, ec] = findTile(null);
-      const candidates = [];
-      if (er > 0) candidates.push(state[er - 1][ec]);
-      if (er < N - 1) candidates.push(state[er + 1][ec]);
-      if (ec > 0) candidates.push(state[er][ec - 1]);
-      if (ec < N - 1) candidates.push(state[er][ec + 1]);
-      const pick = candidates.filter(x => x !== lastMoved)[Math.floor(Math.random() * (candidates.length - (candidates.includes(lastMoved) ? 1 : 0)))];
-      const n = pick !== undefined ? pick : candidates[0];
-      const [r, c] = findTile(n);
-      const [er2, ec2] = findTile(null);
-      state[er2][ec2] = n;
-      state[r][c] = null;
-      lastMoved = n;
-    }
-    moves = 0;
-    moveCountEl.textContent = "0";
-    positionTiles();
-  }
-
-  document.getElementById("shuffleBtn").addEventListener("click", shuffle);
-  document.getElementById("solveBtn").addEventListener("click", () => {
-    // Auto-solve: reset to goal with a flourish
-    state = goalState();
-    buildTiles();
-    positionTiles();
-    solvePuzzle();
-  });
-
-  shuffle();
-  renderQuote();
+})();
 </script>
 </body>
 </html>
