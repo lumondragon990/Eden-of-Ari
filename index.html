@@ -233,8 +233,9 @@
     display: grid;
     grid-template-columns: minmax(280px, 460px) minmax(260px, 1fr);
     gap: clamp(28px, 4vw, 56px);
-    align-items: center;
+    align-items: start;
   }
+  .jigsaw { position: relative; user-select: none; -webkit-user-select: none; }
   .board {
     position: relative;
     width: 100%;
@@ -244,60 +245,192 @@
     background: linear-gradient(160deg, #FFFFFF 0%, #FFD9E4 100%);
     box-shadow: var(--shadow);
   }
-  .board-inner {
+  .cells {
     position: relative;
     width: 100%; height: 100%;
     border-radius: 16px;
     overflow: hidden;
     background: var(--blush);
-    touch-action: manipulation;
   }
-  .tile {
+  .cell {
     position: absolute;
     width: calc(100% / 3);
     height: calc(100% / 3);
+    border: 1.5px dashed rgba(185, 45, 93, 0.35);
+    box-sizing: border-box;
+    /* faint ghost of the piece that belongs here, as a hint */
     background-image: url("images/ari-puzzle.jpg");
     background-size: 300% 300%;
-    border: 1px solid rgba(255, 241, 245, 0.8);
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    transition: top 0.28s cubic-bezier(.2,.7,.2,1), left 0.28s cubic-bezier(.2,.7,.2,1);
+    opacity: 0.9;
   }
-  .tile:hover { filter: brightness(1.06); }
-  .board.solved .tile { border-color: transparent; cursor: default; }
-  /* if the photo ever fails to load, tiles show numbers so the game still works visibly */
-  .board.noimg .tile {
-    background-image: none !important;
-    background-color: rgba(255,255,255,0.7);
+  .cell::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: var(--blush);
+    opacity: 0.82;
+    transition: opacity 0.4s ease;
+  }
+  .cell.filled::after { opacity: 1; }
+  .board.solved .cell { border-color: transparent; }
+
+  .tray-label {
+    margin: 18px 2px 10px;
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--rosegold);
+  }
+  .tray {
+    position: relative;
+    min-height: 150px;
+    border-radius: 20px;
+    border: 1.5px dashed rgba(185, 45, 93, 0.3);
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .piece {
+    position: absolute;
+    background-image: url("images/ari-puzzle.jpg");
+    background-size: 300% 300%;
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(185, 45, 93, 0.35), 0 0 0 1px rgba(255,255,255,0.7) inset;
+    cursor: grab;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 3;
+    transition: box-shadow 0.2s ease;
+  }
+  .piece.dragging {
+    cursor: grabbing;
+    z-index: 6;
+    box-shadow: 0 18px 40px rgba(56, 20, 31, 0.4), 0 0 0 1px rgba(255,255,255,0.7) inset;
+    transition: none;
+  }
+  .piece.snapping { transition: left 0.22s cubic-bezier(.2,.7,.2,1), top 0.22s cubic-bezier(.2,.7,.2,1); }
+  .piece.locked {
+    cursor: default;
+    border-radius: 0;
+    box-shadow: none;
+    z-index: 2;
+  }
+  /* if the photo ever fails to load, pieces show numbers and cells show slots */
+  .jigsaw.noimg .piece, .jigsaw.noimg .cell { background-image: none !important; }
+  .jigsaw.noimg .piece {
+    background-color: rgba(255,255,255,0.9);
     display: flex; align-items: center; justify-content: center;
   }
-  .board.noimg .tile::after {
+  .jigsaw.noimg .piece::after {
     content: attr(data-label);
     font-family: 'Fraunces', serif;
-    font-size: 34px;
+    font-size: 28px;
     color: var(--peony-deep);
   }
 
-  /* option cards for the invitation */
+  /* ---------- Invitation: a letter, not a form ---------- */
+  .letter {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: clamp(36px, 6vw, 64px) clamp(26px, 5vw, 58px);
+    background:
+      linear-gradient(175deg, #FFFDF7 0%, #FFF6EE 68%, #FFEFEA 100%);
+    border-radius: 6px;
+    box-shadow: 0 30px 70px rgba(56, 20, 31, 0.22), 0 2px 0 rgba(255,255,255,0.8) inset;
+    transform: rotate(-0.6deg);
+    text-align: left;
+  }
+  .letter::before {
+    content: "";
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(183, 110, 121, 0.35);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .letter-place {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--rosegold);
+    margin-bottom: 30px;
+  }
+  .letter-salutation {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(52px, 8vw, 76px);
+    line-height: 1;
+    color: var(--peony-deep);
+    margin-bottom: 24px;
+  }
+  .letter p.body-line {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(17px, 1.9vw, 20px);
+    line-height: 1.75;
+    color: var(--plum);
+    margin-bottom: 20px;
+  }
+  .letter em { font-style: italic; color: var(--peony-deep); }
+  .letter-sign {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(34px, 4.6vw, 44px);
+    color: var(--plum);
+    text-align: right;
+    margin: 6px 8px 34px 0;
+  }
+  .wax-seal {
+    position: absolute;
+    top: -26px; right: 26px;
+    width: 76px; height: 76px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, #E3487C 0%, #B92D5D 55%, #8E2A50 100%);
+    box-shadow: 0 8px 18px rgba(142, 42, 80, 0.5), 0 0 0 5px rgba(185,45,93,0.25);
+    display: flex; align-items: center; justify-content: center;
+    transform: rotate(10deg);
+    font-family: 'Great Vibes', cursive;
+    font-size: 26px;
+    color: #FFE1EA;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+  }
+  .wax-seal::before {
+    content: "";
+    position: absolute; inset: 7px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 225, 234, 0.55);
+  }
+
+  /* the two ways, written like postscripts in ink */
   .choice {
     display: block; width: 100%; text-align: left;
-    background: rgba(255,255,255,0.6);
-    border: 2px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 20px 22px;
-    margin: 0 0 14px;
+    background: transparent;
+    border: none;
+    border-left: 3px solid rgba(183, 110, 121, 0.4);
+    border-radius: 0;
+    padding: 14px 18px 14px 22px;
+    margin: 0 0 18px;
     cursor: pointer;
     font-family: 'Karla', sans-serif;
-    transition: border-color 0.2s ease, background 0.2s ease, transform 0.18s ease;
+    transition: border-color 0.25s ease, background 0.25s ease;
   }
-  .choice:hover { transform: translateY(-2px); }
-  .choice.picked { border-color: var(--peony-deep); background: var(--blush); }
-  .choice .c-title { display: block; font-family: 'Fraunces', serif; font-size: 19px; margin-bottom: 6px; color: var(--plum); }
-  .choice .c-more { display: block; font-size: 14px; color: var(--rosegold); line-height: 1.5; }
-  .choice-label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--rosegold); margin: 28px 0 14px; text-align: left; }
+  .choice:hover { background: rgba(227, 72, 124, 0.06); }
+  .choice.picked {
+    border-left-color: var(--peony-deep);
+    background: rgba(227, 72, 124, 0.09);
+  }
+  .choice .c-title {
+    display: block;
+    font-family: 'Great Vibes', cursive;
+    font-size: 30px;
+    margin-bottom: 6px;
+    color: var(--peony-deep);
+  }
+  .choice.picked .c-title::after { content: "  ♥"; font-size: 20px; }
+  .choice .c-more {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--plum);
+    line-height: 1.65;
+  }
+  .choice-label {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--rosegold);
+    margin: 6px 0 18px;
+    text-align: left;
+  }
 
   .solved-overlay {
     position: absolute; inset: 10px;
@@ -573,19 +706,23 @@
 <!-- ============ PUZZLE ============ -->
 <section class="page" id="puzzle">
   <h2 class="section-title reveal">The <span class="script">Puzzle</span></h2>
-  <p class="section-sub reveal">Slide the pieces until the picture comes together</p>
+  <p class="section-sub reveal">Drag every piece where it belongs</p>
 
   <div class="puzzle-wrap">
-    <div class="board reveal" id="board">
-      <div class="board-inner" id="boardInner"></div>
-      <div class="solved-overlay"><span>There she is.</span></div>
+    <div class="jigsaw reveal" id="jigsaw">
+      <div class="board" id="board">
+        <div class="cells" id="cells"></div>
+        <div class="solved-overlay"><span>There she is.</span></div>
+      </div>
+      <div class="tray-label">The pieces</div>
+      <div class="tray" id="tray"></div>
     </div>
 
     <div class="glass puzzle-side reveal">
-      <p>Tap any tile next to the empty space to slide it. Put the picture back together. Take your time, she's worth it.</p>
-      <p>Moves: <span id="moveCount">0</span></p>
+      <p>Grab a piece and drag it onto the board. When it's close to its true spot, it settles in and stays. Take your time, she's worth it.</p>
+      <p>Placed: <span id="placedCount">0</span> / 9</p>
       <div class="actions" style="margin-top:0;">
-        <button class="btn-primary" id="shuffleBtn">Shuffle</button>
+        <button class="btn-primary" id="shuffleBtn">Scatter again</button>
         <button class="btn-glass" id="solveBtn">Give up? Never.</button>
       </div>
       <blockquote class="puzzle-quote" id="puzzleQuote">
@@ -598,28 +735,36 @@
 <!-- ============ LA INVITACIÓN ============ -->
 <section class="page" id="invite">
   <h2 class="section-title reveal">La <span class="script">Invitación</span></h2>
-  <p class="section-sub reveal">This coming Wednesday</p>
+  <p class="section-sub reveal">Written by hand, meant for one reader</p>
 
-  <div class="glass invite-card reveal">
-    <p>Ari. The museum, this Wednesday. I'm asking properly, so pick your version and answer properly.</p>
+  <div class="letter reveal">
+    <div class="wax-seal">L·A</div>
+    <p class="letter-place">Houston · Written on a Thursday, thinking about Wednesday</p>
+    <p class="letter-salutation">Ari,</p>
 
-    <p class="choice-label">Choose one</p>
+    <p class="body-line">There's a museum in this city full of things people crossed oceans to see. I've walked past it a hundred times. I never had a reason to go in until you.</p>
+    <p class="body-line">So here it is, in writing, where I can't take it back: come with me this Wednesday. Marble halls, quiet rooms, paintings older than both our families. Everything in that building was made to be admired — and I'm telling you now, <em>none of it will get my full attention.</em> You'll be the most precious thing in every room and I want to see that with my own eyes.</p>
+    <p class="body-line">Choose how we do it. Then answer me down below, where it counts.</p>
+
+    <p class="letter-sign">— Luis M.</p>
+
+    <p class="choice-label">Postscript · pick your Wednesday</p>
     <button class="choice" id="optA" type="button">
-      <span class="c-title">The classic</span>
-      <span class="c-more">Walk the museum with me. They filled a beautiful building with art, and I'll still spend half the visit admiring you in a setting that finally keeps up. Coffee after.</span>
+      <span class="c-title">El paseo</span>
+      <span class="c-more">You and me, slow through every gallery. No schedule, no rushing the good rooms. I'll look at the art. Mostly I'll look at you looking at the art. Coffee after, and I'm not watching the clock.</span>
     </button>
     <button class="choice" id="optB" type="button">
-      <span class="c-title">The heist rules</span>
-      <span class="c-more">Same museum, one game: we each pick the one piece we'd steal if nobody was watching, then defend our pick over dinner. Whoever loses the argument buys dessert.</span>
+      <span class="c-title">El robo</span>
+      <span class="c-more">Same museum, one game between us: we each pick the single piece we'd steal if nobody was watching, keep it secret until the last room, then defend our choice over dinner. Whoever loses the argument buys dessert. I never lose arguments. Prove me wrong.</span>
     </button>
 
     <p class="inv-status" id="invStatus">Waiting on an answer…</p>
 
     <div class="invite-actions" id="inviteActions">
-      <button class="btn-primary" id="yesBtn">Yes, Wednesday works</button>
+      <button class="btn-primary" id="yesBtn">Sí — Wednesday is ours</button>
       <button class="btn-glass" id="noBtn">Not this time</button>
     </div>
-    <p class="invite-no-note" id="noNote">Understood. No pressure — the offer stands whenever you want it.</p>
+    <p class="invite-no-note" id="noNote">Understood. No pressure — the letter keeps. It'll say the same thing whenever you're ready.</p>
 
     <div class="sig-block" id="sigBlock">
       <p class="sig-label">Then let's make it official. Both parties sign below.</p>
@@ -700,156 +845,244 @@
   }
 
   // ================================================================
-  // PUZZLE — initialized first so nothing else can ever break it
+  // PUZZLE — drag-and-drop jigsaw. Initialized first so nothing else
+  // can ever break it.
   // ================================================================
-  var N = 3;
+  var G = 3, TOTAL = G * G;
+  var jigsawEl = document.getElementById("jigsaw");
   var boardEl = document.getElementById("board");
-  var inner = document.getElementById("boardInner");
-  var moveCountEl = document.getElementById("moveCount");
+  var cellsEl = document.getElementById("cells");
+  var trayEl = document.getElementById("tray");
+  var placedEl = document.getElementById("placedCount");
   var puzzleQuote = document.getElementById("puzzleQuote");
-  var state = [];
-  var tiles = {};
-  var moves = 0;
+  var pieces = [];           // { el, n, locked, x, y }
   var solvedFlag = false;
 
-  function goalState() {
-    var s = [], n = 0, r, c;
-    for (r = 0; r < N; r++) {
-      s.push([]);
-      for (c = 0; c < N; c++) { s[r].push(n === N * N - 1 ? null : n); n++; }
-    }
-    return s;
-  }
-
-  function buildTiles() {
-    inner.innerHTML = "";
-    tiles = {};
-    for (var n = 0; n < N * N - 1; n++) {
-      var t = document.createElement("div");
-      t.className = "tile";
-      t.dataset.n = n;
-      t.dataset.label = n + 1;
-      var gr = Math.floor(n / N), gc = n % N;
-      t.style.backgroundPosition = (gc * 50) + "% " + (gr * 50) + "%";
-      tiles[n] = t;
-      inner.appendChild(t);
-    }
-  }
-
-  // If the puzzle photo can't load, switch to numbered tiles so moves stay visible
+  // If the puzzle photo can't load, pieces show numbers so the game still works
   (function () {
     var probe = new Image();
-    probe.onerror = function () { boardEl.classList.add("noimg"); };
+    probe.onerror = function () { jigsawEl.classList.add("noimg"); };
     probe.src = "images/ari-puzzle.jpg";
   })();
 
-  function positionTiles() {
-    for (var r = 0; r < N; r++) {
-      for (var c = 0; c < N; c++) {
-        var n = state[r][c];
-        if (n === null) continue;
-        tiles[n].style.top = (r * 100 / N) + "%";
-        tiles[n].style.left = (c * 100 / N) + "%";
-      }
+  // build the 9 target cells (each shows a faint ghost of its piece)
+  (function buildCells() {
+    for (var n = 0; n < TOTAL; n++) {
+      var c = document.createElement("div");
+      c.className = "cell";
+      var gr = Math.floor(n / G), gc = n % G;
+      c.style.top = (gr * 100 / G) + "%";
+      c.style.left = (gc * 100 / G) + "%";
+      c.style.backgroundPosition = (gc * 50) + "% " + (gr * 50) + "%";
+      cellsEl.appendChild(c);
+    }
+  })();
+  var cellEls = cellsEl.children;
+
+  // build the 9 draggable pieces
+  (function buildPieces() {
+    for (var n = 0; n < TOTAL; n++) {
+      var el = document.createElement("div");
+      el.className = "piece";
+      el.dataset.label = n + 1;
+      var gr = Math.floor(n / G), gc = n % G;
+      el.style.backgroundPosition = (gc * 50) + "% " + (gr * 50) + "%";
+      jigsawEl.appendChild(el);
+      pieces.push({ el: el, n: n, locked: false, x: 0, y: 0 });
+    }
+  })();
+
+  // geometry helpers — everything in jigsaw-container coordinates
+  function boardBox() {
+    var jr = jigsawEl.getBoundingClientRect();
+    var cr = cellsEl.getBoundingClientRect();
+    return { left: cr.left - jr.left, top: cr.top - jr.top, w: cr.width, h: cr.height };
+  }
+  function trayBox() {
+    var jr = jigsawEl.getBoundingClientRect();
+    var tr = trayEl.getBoundingClientRect();
+    return { left: tr.left - jr.left, top: tr.top - jr.top, w: tr.width, h: tr.height };
+  }
+  function cellSpot(n) {
+    var b = boardBox();
+    return {
+      x: b.left + (n % G) * (b.w / G),
+      y: b.top + Math.floor(n / G) * (b.h / G),
+      w: b.w / G, h: b.h / G
+    };
+  }
+  function place(p, x, y) {
+    p.x = x; p.y = y;
+    p.el.style.left = x + "px";
+    p.el.style.top = y + "px";
+  }
+  function sizePieces() {
+    var b = boardBox();
+    for (var i = 0; i < pieces.length; i++) {
+      pieces[i].el.style.width = (b.w / G) + "px";
+      pieces[i].el.style.height = (b.h / G) + "px";
     }
   }
 
-  function findTile(n) {
-    for (var r = 0; r < N; r++)
-      for (var c = 0; c < N; c++)
-        if (state[r][c] === n) return [r, c];
-    return null;
+  function countPlaced() {
+    var k = 0;
+    for (var i = 0; i < pieces.length; i++) if (pieces[i].locked) k++;
+    placedEl.textContent = k;
+    return k;
   }
 
-  function tryMove(n) {
-    if (solvedFlag) return false;
-    var pos = findTile(n), empty = findTile(null);
-    if (!pos || !empty) return false;
-    if (Math.abs(pos[0] - empty[0]) + Math.abs(pos[1] - empty[1]) !== 1) return false;
-    state[empty[0]][empty[1]] = n;
-    state[pos[0]][pos[1]] = null;
-    positionTiles();
-    moves++;
-    moveCountEl.textContent = moves;
-    checkSolved();
-    return true;
+  function markCell(n, filled) {
+    if (cellEls[n]) cellEls[n].classList.toggle("filled", filled);
   }
 
-  // Event delegation on the board. pointerdown gives instant response on
-  // touch screens; click covers everything else. A short suppression window
-  // stops the click that follows a pointerdown from moving a second tile.
-  var suppressClickUntil = 0;
-  function onTileHit(e) {
-    if (e.type === "click" && Date.now() < suppressClickUntil) return;
-    var t = e.target.closest ? e.target.closest(".tile") : null;
-    if (!t) return;
-    var moved = tryMove(parseInt(t.dataset.n, 10));
-    if (e.type === "pointerdown" && moved) suppressClickUntil = Date.now() + 450;
-  }
-  inner.addEventListener("pointerdown", onTileHit);
-  inner.addEventListener("click", onTileHit);
-
-  function checkSolved() {
-    var goal = goalState();
-    for (var r = 0; r < N; r++)
-      for (var c = 0; c < N; c++)
-        if (state[r][c] !== goal[r][c]) return;
-    solvePuzzle();
+  function winCheck() {
+    if (countPlaced() === TOTAL && !solvedFlag) {
+      solvedFlag = true;
+      boardEl.classList.add("solved");
+      puzzleQuote.classList.add("show");
+      showToast("You built her back. ♥");
+    }
   }
 
-  function solvePuzzle() {
-    solvedFlag = true;
-    var last = document.createElement("div");
-    last.className = "tile";
-    last.style.backgroundPosition = "100% 100%";
-    last.style.top = ((N - 1) * 100 / N) + "%";
-    last.style.left = ((N - 1) * 100 / N) + "%";
-    last.style.opacity = "0";
-    last.style.transition = "opacity 1s ease";
-    inner.appendChild(last);
-    requestAnimationFrame(function () { last.style.opacity = "1"; });
-    boardEl.classList.add("solved");
-    puzzleQuote.classList.add("show");
-    showToast("You built her back. ♥");
-  }
-
-  function shuffle() {
+  function scatter() {
     solvedFlag = false;
     boardEl.classList.remove("solved");
     puzzleQuote.classList.remove("show");
-    state = goalState();
-    buildTiles();
-    var lastMoved = -1;
-    for (var i = 0; i < 140; i++) {
-      var empty = findTile(null);
-      var er = empty[0], ec = empty[1];
-      var candidates = [];
-      if (er > 0) candidates.push(state[er - 1][ec]);
-      if (er < N - 1) candidates.push(state[er + 1][ec]);
-      if (ec > 0) candidates.push(state[er][ec - 1]);
-      if (ec < N - 1) candidates.push(state[er][ec + 1]);
-      var pool = candidates.filter(function (x) { return x !== lastMoved; });
-      if (!pool.length) pool = candidates;
-      var n = pool[Math.floor(Math.random() * pool.length)];
-      var pos = findTile(n);
-      state[er][ec] = n;
-      state[pos[0]][pos[1]] = null;
-      lastMoved = n;
+    var t = trayBox(), b = boardBox();
+    var pw = b.w / G, ph = b.h / G;
+    // make sure the tray is tall enough to hold loose pieces
+    trayEl.style.minHeight = Math.max(150, ph * 1.35) + "px";
+    t = trayBox();
+    for (var i = 0; i < pieces.length; i++) {
+      var p = pieces[i];
+      p.locked = false;
+      p.el.classList.remove("locked", "snapping");
+      markCell(p.n, false);
+      var maxX = Math.max(0, t.w - pw), maxY = Math.max(0, t.h - ph);
+      place(p, t.left + Math.random() * maxX, t.top + Math.random() * maxY);
     }
-    moves = 0;
-    moveCountEl.textContent = "0";
-    positionTiles();
+    countPlaced();
   }
 
-  document.getElementById("shuffleBtn").addEventListener("click", shuffle);
-  document.getElementById("solveBtn").addEventListener("click", function () {
-    state = goalState();
-    buildTiles();
-    positionTiles();
-    solvePuzzle();
+  function lockPiece(p, animate) {
+    var s = cellSpot(p.n);
+    if (animate) {
+      p.el.classList.add("snapping");
+      setTimeout(function () { p.el.classList.remove("snapping"); }, 260);
+    }
+    place(p, s.x, s.y);
+    p.locked = true;
+    p.el.classList.add("locked");
+    markCell(p.n, true);
+    winCheck();
+  }
+
+  function relayout() {
+    sizePieces();
+    var t = trayBox(), b = boardBox();
+    var pw = b.w / G, ph = b.h / G;
+    for (var i = 0; i < pieces.length; i++) {
+      var p = pieces[i];
+      if (p.locked) {
+        var s = cellSpot(p.n);
+        place(p, s.x, s.y);
+      } else {
+        // keep loose pieces inside the container after resize
+        var maxX = Math.max(0, jigsawEl.clientWidth - pw);
+        var maxY = Math.max(0, jigsawEl.clientHeight - ph);
+        place(p, Math.min(Math.max(0, p.x), maxX), Math.min(Math.max(0, p.y), maxY));
+      }
+    }
+  }
+  window.addEventListener("resize", relayout);
+
+  // ----- dragging: pointer events with mouse/touch fallback -----
+  function startDrag(p, clientX, clientY) {
+    if (p.locked || solvedFlag) return null;
+    var jr = jigsawEl.getBoundingClientRect();
+    p.el.classList.add("dragging");
+    return {
+      dx: clientX - jr.left - p.x,
+      dy: clientY - jr.top - p.y
+    };
+  }
+  function moveDrag(p, grip, clientX, clientY) {
+    var jr = jigsawEl.getBoundingClientRect();
+    var b = boardBox();
+    var pw = b.w / G, ph = b.h / G;
+    var x = clientX - jr.left - grip.dx;
+    var y = clientY - jr.top - grip.dy;
+    x = Math.min(Math.max(0, x), Math.max(0, jigsawEl.clientWidth - pw));
+    y = Math.min(Math.max(0, y), Math.max(0, jigsawEl.clientHeight - ph));
+    place(p, x, y);
+  }
+  function endDrag(p) {
+    p.el.classList.remove("dragging");
+    var s = cellSpot(p.n);
+    var dist = Math.sqrt(Math.pow(p.x - s.x, 2) + Math.pow(p.y - s.y, 2));
+    if (dist < s.w * 0.45) {
+      lockPiece(p, true);
+      showToast("That one's home ♥");
+    }
+  }
+
+  pieces.forEach(function (p) {
+    var grip = null;
+    if (window.PointerEvent) {
+      p.el.addEventListener("pointerdown", function (e) {
+        grip = startDrag(p, e.clientX, e.clientY);
+        if (grip && p.el.setPointerCapture) { try { p.el.setPointerCapture(e.pointerId); } catch (err) {} }
+        if (grip) e.preventDefault();
+      });
+      p.el.addEventListener("pointermove", function (e) {
+        if (grip) moveDrag(p, grip, e.clientX, e.clientY);
+      });
+      var finish = function () { if (grip) { grip = null; endDrag(p); } };
+      p.el.addEventListener("pointerup", finish);
+      p.el.addEventListener("pointercancel", finish);
+    } else {
+      // very old browsers: mouse + touch pairs
+      p.el.addEventListener("mousedown", function (e) {
+        grip = startDrag(p, e.clientX, e.clientY);
+        if (grip) e.preventDefault();
+      });
+      document.addEventListener("mousemove", function (e) {
+        if (grip) moveDrag(p, grip, e.clientX, e.clientY);
+      });
+      document.addEventListener("mouseup", function () { if (grip) { grip = null; endDrag(p); } });
+      p.el.addEventListener("touchstart", function (e) {
+        var t0 = e.touches[0];
+        grip = startDrag(p, t0.clientX, t0.clientY);
+        if (grip) e.preventDefault();
+      }, { passive: false });
+      p.el.addEventListener("touchmove", function (e) {
+        if (!grip) return;
+        var t0 = e.touches[0];
+        moveDrag(p, grip, t0.clientX, t0.clientY);
+        e.preventDefault();
+      }, { passive: false });
+      p.el.addEventListener("touchend", function () { if (grip) { grip = null; endDrag(p); } });
+    }
   });
 
-  shuffle();
+  document.getElementById("shuffleBtn").addEventListener("click", function () {
+    sizePieces();
+    scatter();
+  });
+  document.getElementById("solveBtn").addEventListener("click", function () {
+    sizePieces();
+    for (var i = 0; i < pieces.length; i++) lockPiece(pieces[i], true);
+  });
+
+  // first layout once everything has dimensions
+  function initPuzzle() {
+    sizePieces();
+    scatter();
+  }
+  if (document.readyState === "complete") initPuzzle();
+  else window.addEventListener("load", initPuzzle);
+  // also lay out immediately so it isn't blank before load fires
+  initPuzzle();
 
   // ================================================================
   // DAILY QUOTE — a different one every day, automatically
@@ -1042,8 +1275,8 @@
   var clausePlan = document.getElementById("clausePlan");
 
   var PLANS = {
-    A: "One museum, walked slowly. Nobody rushes the good rooms.",
-    B: "One museum, heist rules. Each party picks the one piece they'd steal, then defends it over dinner. The losing argument buys dessert."
+    A: "El paseo. One museum, walked slowly, no schedule. Nobody rushes the good rooms.",
+    B: "El robo. Each party picks the one piece they'd steal, keeps it secret until the last room, then defends it over dinner. The losing argument buys dessert."
   };
 
   var inv = store.get(INV_KEY, { answer: null, option: null, ari: "", luis: "" });
